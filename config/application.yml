@@ -1,0 +1,24 @@
+default: &default
+  ADMIN_EMAIL: admin@invoiceapp.local
+  ADMIN_PASSWORD: admin123
+  RAZORPAY_KEY_ID: rzp_test_Rl3m4xZ0ZJ61LE
+  RAZORPAY_KEY_SECRET: waUDKApNmn23zy3H6UXt8E0D
+
+development:
+  <<: *default
+  RAZORPAY_KEY_ID: rzp_test_Rl3m4xZ0ZJ61LE
+  RAZORPAY_KEY_SECRET: waUDKApNmn23zy3H6UXt8E0D
+
+test:
+  <<: *default
+  ADMIN_EMAIL: admin-test@invoiceapp.local
+  ADMIN_PASSWORD: admin123
+  RAZORPAY_KEY_ID: rzpk_test_test_key
+  RAZORPAY_KEY_SECRET: rzps_test_test_secret
+
+production:
+  <<: *default
+  ADMIN_EMAIL: <%= ENV["ADMIN_EMAIL"] %>
+  ADMIN_PASSWORD: <%= ENV["ADMIN_PASSWORD"] %>
+  RAZORPAY_KEY_ID: <%= ENV["RAZORPAY_KEY_ID"] %>
+  RAZORPAY_KEY_SECRET: <%= ENV["RAZORPAY_KEY_SECRET"] %>

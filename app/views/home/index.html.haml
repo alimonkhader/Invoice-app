@@ -1,0 +1,62 @@
+- content_for :title, "Invoice Plans"
+
+.page-hero
+  .page-hero__content
+    %span.eyebrow Invoice platform
+    %h1.page-title Plans, billing, and invoice operations in one place.
+    %p.page-subtitle Launch the product from a proper home page with clear plans, product features, registration flow, and login access for both purchased accounts and admins.
+    .actions.actions--compact
+      = link_to "View Plans", "#plans", class: "btn btn-primary"
+      = link_to "Account Login", login_path, class: "btn btn-outline-secondary"
+      = link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary"
+  .page-hero__panel
+    %span.hero-pill Product features
+    %p.mb-0 Trial starts free, Basic unlocks monthly unlimited invoices, and Premium adds a 3-month cycle with Excel reporting.
+
+.feature-grid
+  - @feature_groups.each do |feature|
+    .card.feature-card
+      %span.card-kicker Feature
+      %h3.card-title= feature[:title]
+      %p.muted.mb-0= feature[:description]
+
+#plans.page-section
+  .section-heading
+    %div
+      %span.eyebrow Pricing
+      %h2.section-title Choose a plan
+      %p.muted.mb-0 Start with Trial or register directly for a paid plan.
+  .plan-grid
+    - @plans.each do |plan|
+      .card.plan-card
+        %span.card-kicker= plan.name
+        %h3.card-title
+          - if plan.price.zero?
+            Free
+          - else
+            = number_to_currency(plan.price, unit: "₹", precision: 0)
+        %p.plan-meta= plan.duration_label
+        %p.muted= plan.description
+        %ul.plan-features
+          %li= plan.unlimited_invoices? ? "Unlimited invoices" : "#{plan.invoice_limit} invoices included"
+          %li= plan.excel_reports ? "Excel report export included" : "Excel report export not included"
+          %li= plan.active? ? "Available for signup" : "Currently inactive"
+        .actions.actions--compact
+          = link_to "Register", new_plan_registration_path(plan), class: "btn btn-primary"
+
+.page-section
+  .section-heading
+    %div
+      %span.eyebrow Operations
+      %h2.section-title Product features
+      %p.muted.mb-0 Billing workflow, reporting, and admin control in one interface.
+  .feature-list
+    .meta-item
+      %span.meta-label Invoice creation
+      %span.meta-value Fast item entry with PDF, email, and WhatsApp sharing.
+    .meta-item
+      %span.meta-label Reports
+      %span.meta-value Daily, monthly, GST split, and XLSX export for monthly purchase totals.
+    .meta-item
+      %span.meta-label Users and roles
+      %span.meta-value Admin users and purchased-plan account admins are stored in one role-based users table.

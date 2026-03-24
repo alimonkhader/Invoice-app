@@ -1,0 +1,51 @@
+- content_for :title, "Register #{ @plan.name }"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Plan registration
+    %h1.page-title= "Register for #{@plan.name}"
+    - if @plan.price.zero?
+      %p.page-subtitle Complete the registration and activate your free plan instantly.
+    - else
+      %p.page-subtitle Save the account details first, then complete the Razorpay payment to activate the plan.
+  .page-hero__panel
+    %span.hero-pill Plan details
+    %p.mb-1= @plan.duration_label
+    %p.mb-1= @plan.unlimited_invoices? ? "Unlimited invoices" : "#{@plan.invoice_limit} invoices"
+    %p.mb-1= @plan.price.zero? ? "Free" : number_to_currency(@plan.price, unit: "₹", precision: 0)
+    %p.mb-0= @plan.price.zero? ? "No payment needed" : "Razorpay checkout will open after registration"
+
+.form-card
+  = form_with model: [@plan, @user], url: plan_registrations_path(@plan) do |f|
+    - if @user.errors.any?
+      .error-box
+        %strong= "#{pluralize(@user.errors.count, 'error')} prevented registration:"
+        %ul
+          - @user.errors.full_messages.each do |message|
+            %li= message
+
+    .section-card
+      .section-head
+        %div
+          %h3.section-title Account details
+          %p.section-copy These details will be stored as a plan user with the account admin role.
+      .form-grid
+        .field
+          = f.label :company_name, "Company name"
+          = f.text_field :company_name, class: "form-control", placeholder: "Company name"
+        .field
+          = f.label :name, "Owner name"
+          = f.text_field :name, class: "form-control", placeholder: "Owner name"
+        .field
+          = f.label :email, "Email"
+          = f.email_field :email, class: "form-control", placeholder: "you@example.com"
+        .field
+          = f.label :phone, "Phone"
+          = f.telephone_field :phone, class: "form-control", placeholder: "Phone number"
+        .field
+          = f.label :password, "Password"
+          = f.password_field :password, class: "form-control", placeholder: "Create password"
+
+    .actions
+      = f.submit(@plan.price.zero? ? "Complete Registration" : "Continue to Payment", class: "btn btn-primary")
+      = link_to "Back to plans", root_path(anchor: "plans"), class: "btn btn-outline-secondary"

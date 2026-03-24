@@ -1,0 +1,51 @@
+- content_for :title, "Admin Plans"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Super admin
+    %h1.page-title Plans and pricing
+    %p.page-subtitle Create and manage Trial, Basic, Premium, or any future plan from one admin page.
+  .page-hero__panel
+    %span.hero-pill Admin tools
+    %p.mb-3 Maintain pricing, duration, invoice limits, and Excel-report access.
+    = link_to "Registered Accounts", admin_accounts_path, class: "btn btn-outline-secondary"
+
+.admin-grid
+  .form-card
+    .section-head
+      %div
+        %h2.section-title Add plan
+        %p.section-copy Create a new plan or pricing variation.
+    = render "form", plan: @plan
+
+  .table-card
+    .table-card__header
+      %div
+        %h2.table-card__title Existing plans
+        %p.muted.mb-0 All configured plans, ordered for display.
+    - if @plans.any?
+      .table-responsive
+        %table.invoice-table
+          %thead
+            %tr
+              %th Name
+              %th Price
+              %th Duration
+              %th Invoice limit
+              %th Excel
+              %th Status
+              %th Actions
+          %tbody
+            - @plans.each do |plan|
+              %tr
+                %td= plan.name
+                %td= plan.price.zero? ? "Free" : number_to_currency(plan.price, unit: "₹", precision: 0)
+                %td= plan.duration_label
+                %td= plan.unlimited_invoices? ? "Unlimited" : plan.invoice_limit
+                %td= plan.excel_reports ? "Enabled" : "No"
+                %td= plan.active? ? "Active" : "Inactive"
+                %td= link_to "Edit", edit_admin_plan_path(plan), class: "btn btn-outline-secondary btn-sm"
+    - else
+      .empty-state
+        %h3.empty-state__title No plans configured
+        %p.muted.mb-0 Add the first plan from the form.

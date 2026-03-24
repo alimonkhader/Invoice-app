@@ -1,0 +1,133 @@
+- content_for :title, "Purchase Reports"
+
+.page-hero
+  .page-hero__content
+    %span.eyebrow Purchase reports
+    %h1.page-title Purchase summary
+    %p.page-subtitle Track purchase totals by day, review month-wise tally, and identify tax calculation through separate CGST, SGST, and total GST values.
+  .page-hero__panel
+    %span.hero-pill Finance view
+    %p.mb-3 Daily totals, monthly tally, and tax received split into CGST and SGST.
+    - if admin_authenticated? || current_account_user&.excel_reports_enabled?
+      = link_to "Download Monthly XLSX", purchase_reports_xlsx_path(month: @selected_month.strftime("%Y-%m")), class: "btn btn-primary"
+    - else
+      %p.mb-0.text-muted XLSX export is available on plans with Excel reporting enabled.
+
+.report-filters
+  = form_with url: purchase_reports_path, method: :get, local: true, class: "report-filters__form" do
+    .report-filters__group
+      .field.mb-0
+        = label_tag :date, "Select day"
+        = date_field_tag :date, @selected_date, class: "form-control"
+      .field.mb-0
+        = label_tag :month, "Select month"
+        = month_field_tag :month, @selected_month.strftime("%Y-%m"), class: "form-control"
+    .report-filters__actions
+      = submit_tag "Update report", class: "btn btn-primary"
+      = link_to "Reset", purchase_reports_path, class: "btn btn-outline-secondary"
+
+.report-grid
+  .summary-card.report-summary
+    .summary-card__label Selected day purchase
+    %p.total-amount= number_to_currency(@daily_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "#{@daily_invoice_count} invoice#{'s' unless @daily_invoice_count == 1} on #{@selected_date.strftime('%d %b %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected day CGST
+    %p.total-amount= number_to_currency(@daily_cgst_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "CGST received on #{@selected_date.strftime('%d %b %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected day SGST
+    %p.total-amount= number_to_currency(@daily_sgst_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "SGST received on #{@selected_date.strftime('%d %b %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected day GST received
+    %p.total-amount= number_to_currency(@daily_gst_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "CGST + SGST received on #{@selected_date.strftime('%d %b %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected month tally
+    %p.total-amount= number_to_currency(@monthly_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "#{@monthly_invoice_count} invoice#{'s' unless @monthly_invoice_count == 1} in #{@selected_month.strftime('%B %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected month CGST
+    %p.total-amount= number_to_currency(@monthly_cgst_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "CGST received in #{@selected_month.strftime('%B %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected month SGST
+    %p.total-amount= number_to_currency(@monthly_sgst_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "SGST received in #{@selected_month.strftime('%B %Y')}"
+
+  .summary-card.report-summary
+    .summary-card__label Selected month GST received
+    %p.total-amount= number_to_currency(@monthly_gst_total.to_f, unit: "₹", precision: 2)
+    %p.summary-note= "CGST + SGST received in #{@selected_month.strftime('%B %Y')}"
+
+.report-sections
+  .table-card
+    .table-card__header
+      %div
+        %h2.table-card__title Daily tally in #{@selected_month.strftime('%B %Y')}
+        %p.muted.mb-0 Purchase, CGST, SGST, and total GST grouped by day for the selected month.
+    - if @monthly_daily_breakdown.any?
+      .table-responsive
+        %table.invoice-table
+          %thead
+            %tr
+              %th Day
+              %th Purchase total
+              %th CGST
+              %th SGST
+              %th GST received
+          %tbody
+            - @monthly_daily_breakdown.each do |day, totals|
+              %tr
+                %td= day.strftime("%d %b %Y")
+                %td
+                  %span.table-total= number_to_currency(totals[:purchase_total].to_f, unit: "₹", precision: 2)
+                %td
+                  %span.table-total= number_to_currency(totals[:cgst_total].to_f, unit: "₹", precision: 2)
+                %td
+                  %span.table-total= number_to_currency(totals[:sgst_total].to_f, unit: "₹", precision: 2)
+                %td
+                  %span.table-total= number_to_currency(totals[:gst_total].to_f, unit: "₹", precision: 2)
+    - else
+      .empty-state
+        %h3.empty-state__title No purchases in this month
+        %p.muted.mb-0 Pick another month to review its tally.
+
+  .table-card
+    .table-card__header
+      %div
+        %h2.table-card__title Month-wise purchase tally
+        %p.muted.mb-0 Overall purchase totals, CGST, SGST, and total GST grouped by month.
+    - if @monthwise_tally.any?
+      .table-responsive
+        %table.invoice-table
+          %thead
+            %tr
+              %th Month
+              %th Purchase total
+              %th CGST
+              %th SGST
+              %th GST received
+          %tbody
+            - @monthwise_tally.each do |month, totals|
+              %tr
+                %td= month.strftime("%B %Y")
+                %td
+                  %span.table-total= number_to_currency(totals[:purchase_total].to_f, unit: "₹", precision: 2)
+                %td
+                  %span.table-total= number_to_currency(totals[:cgst_total].to_f, unit: "₹", precision: 2)
+                %td
+                  %span.table-total= number_to_currency(totals[:sgst_total].to_f, unit: "₹", precision: 2)
+                %td
+                  %span.table-total= number_to_currency(totals[:gst_total].to_f, unit: "₹", precision: 2)
+    - else
+      .empty-state
+        %h3.empty-state__title No purchase history yet
+        %p.muted.mb-0 Create invoices to generate report data.

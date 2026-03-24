@@ -1,0 +1,43 @@
+= form_with model: [:admin, plan] do |f|
+  - if plan.errors.any?
+    .error-box
+      %strong= "#{pluralize(plan.errors.count, 'error')} prevented this plan from being saved:"
+      %ul
+        - plan.errors.full_messages.each do |message|
+          %li= message
+
+  .form-grid
+    .field
+      = f.label :name
+      = f.text_field :name, class: "form-control"
+    .field
+      = f.label :code
+      = f.text_field :code, class: "form-control"
+    .field
+      = f.label :price, "Price (₹)"
+      = f.number_field :price, class: "form-control", min: 0, step: 1
+    .field
+      = f.label :invoice_limit, "Invoice limit"
+      = f.number_field :invoice_limit, class: "form-control", min: 1, step: 1
+    .field
+      = f.label :duration_months, "Duration in months"
+      = f.number_field :duration_months, class: "form-control", min: 0, step: 1
+    .field
+      = f.label :position
+      = f.number_field :position, class: "form-control", min: 0, step: 1
+    .field
+      = f.label :excel_reports, "Excel reports"
+      .checkbox-row
+        = f.check_box :excel_reports
+        %span.muted Enable monthly XLSX reporting for this plan.
+    .field
+      = f.label :active, "Active"
+      .checkbox-row
+        = f.check_box :active
+        %span.muted Show this plan on the home page.
+  .field
+    = f.label :description
+    = f.text_area :description, class: "form-control", rows: 3
+
+  .actions
+    = f.submit class: "btn btn-primary"

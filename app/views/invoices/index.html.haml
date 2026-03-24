@@ -1,4 +1,10 @@
 - content_for :title, "Invoices"
+- sort_arrow = current_direction == "asc" ? "↑" : "↓"
+- invoice_number_direction = current_sort == "invoice_number" && current_direction == "asc" ? "desc" : "asc"
+- customer_name_direction = current_sort == "customer_name" && current_direction == "asc" ? "desc" : "asc"
+- date_direction = current_sort == "date" && current_direction == "asc" ? "desc" : "asc"
+- total_direction = current_sort == "total" && current_direction == "asc" ? "desc" : "asc"
+- final_total_direction = current_sort == "final_total" && current_direction == "asc" ? "desc" : "asc"
 
 .page-hero
   .page-hero__content
@@ -7,9 +13,81 @@
     %p.page-subtitle Manage, review, and share invoices from a calmer dashboard with clearer totals and spacing.
   .page-hero__panel
     %span.hero-pill Dashboard
-    %p.mb-3 Keep recent invoices accessible and move into a new invoice in one click.
+    %p.mb-3 Showing #{@invoices.size} of #{@total_invoices} invoices, 10 per page.
     = link_to "New invoice", new_invoice_path, class: "btn btn-primary"
 
-#invoices.stack
-  - @invoices.each do |invoice|
-    = render invoice
+.table-card
+  .table-card__header
+    %div
+      %h2.table-card__title Invoice data table
+      %p.muted.mb-0 Paginated invoice list with search, sort, and 10 records per page.
+    %span.badge-soft Page #{@page} of #{@total_pages}
+
+  = form_with url: invoices_path, method: :get, local: true, class: "table-toolbar" do
+    .table-toolbar__search
+      = text_field_tag :query, @query, placeholder: "Search by invoice number, company, or customer", class: "form-control"
+      = hidden_field_tag :sort, current_sort
+      = hidden_field_tag :direction, current_direction
+    .table-toolbar__actions
+      = submit_tag "Search", class: "btn btn-primary"
+      = link_to "Reset", invoices_path, class: "btn btn-outline-secondary"
+
+  - if @invoices.any?
+    .table-responsive
+      %table.invoice-table
+        %thead
+          %tr
+            %th
+              = link_to invoices_path(request.query_parameters.merge(sort: "invoice_number", direction: invoice_number_direction, page: 1)), class: "sort-link" do
+                Invoice
+                - if current_sort == "invoice_number"
+                  %span.sort-indicator= sort_arrow
+            %th
+              = link_to invoices_path(request.query_parameters.merge(sort: "customer_name", direction: customer_name_direction, page: 1)), class: "sort-link" do
+                Customer
+                - if current_sort == "customer_name"
+                  %span.sort-indicator= sort_arrow
+            %th
+              = link_to invoices_path(request.query_parameters.merge(sort: "date", direction: date_direction, page: 1)), class: "sort-link" do
+                Date
+                - if current_sort == "date"
+                  %span.sort-indicator= sort_arrow
+            %th
+              = link_to invoices_path(request.query_parameters.merge(sort: "total", direction: total_direction, page: 1)), class: "sort-link" do
+                Subtotal
+                - if current_sort == "total"
+                  %span.sort-indicator= sort_arrow
+            %th
+              = link_to invoices_path(request.query_parameters.merge(sort: "final_total", direction: final_total_direction, page: 1)), class: "sort-link" do
+                Final Total
+                - if current_sort == "final_total"
+                  %span.sort-indicator= sort_arrow
+            %th Actions
+        %tbody
+          - @invoices.each do |invoice|
+            %tr
+              %td
+                %strong= "##{invoice.invoice_number.presence || invoice.id}"
+              %td= invoice.customer&.name || "N/A"
+              %td= invoice.date || invoice.created_at&.to_date
+              %td= number_to_currency(invoice.total.to_f, unit: "₹", precision: 2)
+              %td
+                %span.table-total= number_to_currency(invoice.final_total.to_f, unit: "₹", precision: 2)
+              %td
+                = link_to "View", invoice, class: "btn btn-outline-secondary btn-sm"
+
+    - if @total_pages > 1
+      %nav.pagination-bar{ aria: { label: "Invoice pagination" } }
+        = link_to "Previous", invoices_path(request.query_parameters.merge(page: @page - 1)), class: "pagination-link #{'is-disabled' if @page == 1}", aria: { disabled: (@page == 1) }, tabindex: (@page == 1 ? -1 : nil)
+        .pagination-pages
+          - (1..@total_pages).each do |page_number|
+            - if page_number == @page
+              %span.pagination-link.is-active= page_number
+            - else
+              = link_to page_number, invoices_path(request.query_parameters.merge(page: page_number)), class: "pagination-link"
+        = link_to "Next", invoices_path(request.query_parameters.merge(page: @page + 1)), class: "pagination-link #{'is-disabled' if @page == @total_pages}", aria: { disabled: (@page == @total_pages) }, tabindex: (@page == @total_pages ? -1 : nil)
+  - else
+    .empty-state
+      %h3.empty-state__title No invoices found
+      %p.muted.mb-3 Try a different search term or create a new invoice.
+      = link_to "Create invoice", new_invoice_path, class: "btn btn-primary"

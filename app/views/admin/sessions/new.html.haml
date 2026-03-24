@@ -1,0 +1,30 @@
+- content_for :title, "Admin Login"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Super admin
+    %h1.page-title Admin login
+    %p.page-subtitle Use a registered admin account to manage plans, pricing, and registered accounts.
+  .page-hero__panel
+    %span.hero-pill Access control
+    %p.mb-1 Initial seeded admin email: `admin@invoiceapp.local`
+    %p.mb-0 Initial seeded password: `admin123`
+
+.form-card
+  = form_with url: admin_session_path, method: :post do |f|
+    .section-card
+      .section-head
+        %div
+          %h3.section-title Credentials
+          %p.section-copy Admin access is protected by database-backed admin accounts.
+      .form-grid
+        .field
+          = label_tag :email, "Admin email"
+          = email_field_tag :email, params[:email], class: "form-control", placeholder: "admin@invoiceapp.local"
+        .field
+          = label_tag :password, "Password"
+          = password_field_tag :password, nil, class: "form-control", placeholder: "Password"
+
+    .actions
+      = f.submit "Login", class: "btn btn-primary"
+      = link_to "Back to home", root_path, class: "btn btn-outline-secondary"

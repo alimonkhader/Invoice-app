@@ -1,0 +1,12 @@
+- content_for :title, "Edit Plan"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Super admin
+    %h1.page-title= "Edit #{@plan.name}"
+    %p.page-subtitle Update pricing, invoice limits, duration, and feature flags for this plan.
+  .page-hero__panel
+    = link_to "Back to plans", admin_plans_path, class: "btn btn-outline-secondary"
+
+.form-card
+  = render "form", plan: @plan

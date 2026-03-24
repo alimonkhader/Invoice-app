@@ -1,14 +1,34 @@
 class InvoicesController < ApplicationController
   require "cgi"
 
+  INVOICES_PER_PAGE = 10
+  SORTABLE_INVOICE_COLUMNS = {
+    "invoice_number" => "invoices.invoice_number",
+    "customer_name" => "customers.name",
+    "date" => "invoices.date",
+    "total" => "invoices.total",
+    "final_total" => "invoices.final_total",
+    "created_at" => "invoices.created_at"
+  }.freeze
+
+  before_action :require_portal_authentication
   before_action :set_invoice, only: %i[show edit update destroy send_email share_whatsapp]
 
-  # GET /invoices
+  helper_method :current_sort, :current_direction
+
   def index
-    @invoices = Invoice.includes(:customer).order(created_at: :desc)
+    invoices_scope = Invoice.left_joins(:customer).includes(:customer)
+    invoices_scope = apply_search(invoices_scope)
+    invoices_scope = invoices_scope.order(Arel.sql("#{sort_column} #{sort_direction}, invoices.created_at DESC"))
+
+    @page = normalized_page
+    @query = params[:query].to_s.strip
+    @total_invoices = invoices_scope.count
+    @total_pages = [(@total_invoices.to_f / INVOICES_PER_PAGE).ceil, 1].max
+    @page = @total_pages if @page > @total_pages
+    @invoices = invoices_scope.offset((@page - 1) * INVOICES_PER_PAGE).limit(INVOICES_PER_PAGE)
   end
 
-  # GET /invoices/1
   def show
     respond_to do |format|
       format.html
@@ -16,17 +36,14 @@ class InvoicesController < ApplicationController
     end
   end
 
-  # GET /invoices/new
   def new
     @invoice = Invoice.new(default_company_attributes)
     @invoice.invoice_items.build
   end
 
-  # GET /invoices/1/edit
   def edit
   end
 
-  # POST /invoices
   def create
     @invoice = Invoice.new(invoice_params)
     assign_customer_from_input(@invoice)
@@ -42,7 +59,6 @@ class InvoicesController < ApplicationController
     end
   end
 
-  # PATCH/PUT /invoices/1
   def update
     @invoice.assign_attributes(invoice_params)
     assign_customer_from_input(@invoice)
@@ -58,7 +74,6 @@ class InvoicesController < ApplicationController
     end
   end
 
-  # DELETE /invoices/1
   def destroy
     @invoice.destroy!
 
@@ -165,6 +180,38 @@ class InvoicesController < ApplicationController
 
   def inline_customer_phone
     params.dig(:invoice, :customer_phone).to_s.strip
+  end
+
+  def normalized_page
+    page = params[:page].to_i
+    page.positive? ? page : 1
+  end
+
+  def current_sort
+    params[:sort].presence_in(SORTABLE_INVOICE_COLUMNS.keys) || "created_at"
+  end
+
+  def current_direction
+    params[:direction] == "asc" ? "asc" : "desc"
+  end
+
+  def sort_column
+    SORTABLE_INVOICE_COLUMNS.fetch(current_sort)
+  end
+
+  def sort_direction
+    current_direction.upcase
+  end
+
+  def apply_search(scope)
+    query = params[:query].to_s.strip
+    return scope unless query.present?
+
+    sanitized_query = "%#{ActiveRecord::Base.sanitize_sql_like(query.downcase)}%"
+    scope.where(
+      "LOWER(invoices.invoice_number) LIKE :query OR LOWER(invoices.company_name) LIKE :query OR LOWER(customers.name) LIKE :query",
+      query: sanitized_query
+    )
   end
 
   def whatsapp_share_url(invoice)

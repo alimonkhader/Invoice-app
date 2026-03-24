@@ -1,0 +1,54 @@
+- content_for :title, "Registered Accounts"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Super admin
+    %h1.page-title Registered accounts
+    %p.page-subtitle View every purchased-plan account admin stored in the unified users table.
+  .page-hero__panel
+    %span.hero-pill Admin tools
+    %p.mb-3 Accounts are listed newest first with their selected plan snapshot.
+    = link_to "Manage Plans", admin_plans_path, class: "btn btn-outline-secondary"
+
+.table-card
+  .table-card__header
+    %div
+      %h2.table-card__title Account list
+      %p.muted.mb-0 All registered plan users with pricing, duration, reporting access, and purchase state.
+  - if @accounts.any?
+    .table-responsive
+      %table.invoice-table
+        %thead
+          %tr
+            %th Company
+            %th Owner
+            %th Plan
+            %th Email
+            %th Phone
+            %th Account status
+            %th Payment status
+            %th Price
+            %th Invoice limit
+            %th Excel
+            %th Started
+            %th Expires
+        %tbody
+          - @accounts.each do |account|
+            - latest_purchase = account.plan_purchases.max_by(&:created_at)
+            %tr
+              %td= account.company_name
+              %td= account.name
+              %td= account.plan&.name || "N/A"
+              %td= account.email
+              %td= account.phone
+              %td= account.status.to_s.humanize.presence || "N/A"
+              %td= latest_purchase&.status&.humanize || (account.plan_price.zero? ? "Free" : "Not started")
+              %td= account.plan_price.zero? ? "Free" : number_to_currency(account.plan_price, unit: "₹", precision: 0)
+              %td= account.invoice_limit.nil? ? "Unlimited" : account.invoice_limit
+              %td= account.excel_reports_enabled ? "Enabled" : "No"
+              %td= account.started_on || "Pending"
+              %td= account.expires_on || (account.active? ? "Trial" : "Pending")
+  - else
+    .empty-state
+      %h3.empty-state__title No registered accounts yet
+      %p.muted.mb-0 Accounts will appear here after a plan registration is completed.

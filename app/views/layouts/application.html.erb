@@ -17,11 +17,27 @@
         <div class="container py-3">
           <div>
             <%= link_to "Invoice App", root_path, class: "navbar-brand fw-bold brand" %>
-            <p class="nav-caption mb-0">Create, share, and organize invoices with a calm green workspace.</p>
+            <p class="nav-caption mb-0">Plans, registrations, invoices, reports, and admin tools in one workspace.</p>
           </div>
-          <nav class="ms-auto d-flex gap-2">
-            <%= link_to "Invoices", invoices_path, class: "btn btn-outline-secondary btn-sm" %>
-            <%= link_to "New Invoice", root_path, class: "btn btn-success btn-sm" %>
+          <nav class="ms-auto d-flex gap-2 flex-wrap justify-content-end">
+            <%= link_to "Home", root_path, class: "btn btn-outline-secondary btn-sm" %>
+            <% if admin_authenticated? %>
+              <%= link_to "Invoices", invoices_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Reports", purchase_reports_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Admin Plans", admin_plans_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Accounts", admin_accounts_path, class: "btn btn-outline-secondary btn-sm" %>
+              <span class="btn btn-outline-secondary btn-sm disabled"><%= current_admin.email %></span>
+              <%= button_to "Admin Logout", admin_session_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+            <% elsif account_authenticated? %>
+              <%= link_to "Invoices", invoices_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Customers", customers_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Reports", purchase_reports_path, class: "btn btn-outline-secondary btn-sm" %>
+              <span class="btn btn-outline-secondary btn-sm disabled"><%= current_account_user.email %></span>
+              <%= button_to "Logout", user_session_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+            <% else %>
+              <%= link_to "Account Login", login_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary btn-sm" %>
+            <% end %>
           </nav>
         </div>
       </header>

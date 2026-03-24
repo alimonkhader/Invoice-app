@@ -1,0 +1,30 @@
+- content_for :title, "Account Login"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Purchased plan access
+    %h1.page-title Account login
+    %p.page-subtitle Log in with the email and password used during plan registration to access invoices and reports.
+  .page-hero__panel
+    %span.hero-pill Account access
+    %p.mb-1 Trial, Basic, and Premium registrations all use the same login screen.
+    %p.mb-0 Premium users can export monthly XLSX reports after login.
+
+.form-card
+  = form_with url: user_session_path, method: :post do |f|
+    .section-card
+      .section-head
+        %div
+          %h3.section-title Credentials
+          %p.section-copy Purchased plan accounts are stored in the users table with the account admin role.
+      .form-grid
+        .field
+          = label_tag :email, "Email"
+          = email_field_tag :email, params[:email], class: "form-control", placeholder: "you@example.com"
+        .field
+          = label_tag :password, "Password"
+          = password_field_tag :password, nil, class: "form-control", placeholder: "Password"
+
+    .actions
+      = f.submit "Login", class: "btn btn-primary"
+      = link_to "Back to home", root_path, class: "btn btn-outline-secondary"

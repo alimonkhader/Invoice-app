@@ -1,0 +1,72 @@
+- content_for :title, "Complete Payment"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Razorpay checkout
+    %h1.page-title Complete your #{@plan_purchase.plan.name} purchase
+    %p.page-subtitle Pay securely with Razorpay to activate the account for #{@plan_purchase.user.company_name}.
+  .page-hero__panel
+    %span.hero-pill Payment summary
+    %p.mb-1= number_to_currency(@plan_purchase.amount, unit: "₹", precision: 0)
+    %p.mb-1= @plan_purchase.plan.duration_label
+    %p.mb-0 Receipt: #{@plan_purchase.receipt}
+
+.form-card
+  .section-card
+    .section-head
+      %div
+        %h3.section-title Account summary
+        %p.section-copy Review the plan and open Razorpay checkout when you are ready.
+    .feature-list
+      .meta-item
+        %span.meta-label Company
+        %span.meta-value= @plan_purchase.user.company_name
+      .meta-item
+        %span.meta-label Owner
+        %span.meta-value= @plan_purchase.user.name
+      .meta-item
+        %span.meta-label Email
+        %span.meta-value= @plan_purchase.user.email
+      .meta-item
+        %span.meta-label Plan
+        %span.meta-value= @plan_purchase.plan.name
+      .meta-item
+        %span.meta-label Amount
+        %span.meta-value= number_to_currency(@plan_purchase.amount, unit: "₹", precision: 0)
+      .meta-item
+        %span.meta-label Status
+        %span.meta-value= @plan_purchase.status.humanize
+
+    .actions
+      %button#razorpay-pay-button.btn.btn-primary{ type: "button" } Pay with Razorpay
+      = link_to "Back to home", root_path, class: "btn btn-outline-secondary"
+
+= form_with url: verify_plan_purchase_path(@plan_purchase), method: :post, id: "razorpay-verification-form", local: true do |f|
+  = hidden_field_tag :razorpay_payment_id
+  = hidden_field_tag :razorpay_order_id
+  = hidden_field_tag :razorpay_signature
+
+%script{ src: "https://checkout.razorpay.com/v1/checkout.js" }
+:javascript
+  document.addEventListener("turbo:load", function () {
+    var payButton = document.getElementById("razorpay-pay-button");
+    if (!payButton) return;
+
+    payButton.addEventListener("click", function () {
+      var options = #{raw(json_escape(@checkout_options.to_json))};
+      options.handler = function (response) {
+        document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
+        document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+        document.getElementById("razorpay_signature").value = response.razorpay_signature;
+        document.getElementById("razorpay-verification-form").submit();
+      };
+      options.modal = {
+        ondismiss: function () {
+          window.alert("Payment was not completed. You can retry from this page.");
+        }
+      };
+
+      var razorpay = new Razorpay(options);
+      razorpay.open();
+    });
+  });

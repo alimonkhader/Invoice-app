@@ -1,25 +1,21 @@
 class CustomersController < ApplicationController
+  before_action :require_portal_authentication
   before_action :set_customer, only: %i[show edit update destroy]
 
-  # GET /customers or /customers.json
   def index
     @customers = Customer.order(:name)
   end
 
-  # GET /customers/1 or /customers/1.json
   def show
   end
 
-  # GET /customers/new
   def new
     @customer = Customer.new
   end
 
-  # GET /customers/1/edit
   def edit
   end
 
-  # POST /customers or /customers.json
   def create
     @customer = Customer.new(customer_params)
 
@@ -28,14 +24,12 @@ class CustomersController < ApplicationController
     render_validation_errors(:new)
   end
 
-  # PATCH/PUT /customers/1 or /customers/1.json
   def update
     return render_update_success if @customer.update(customer_params)
 
     render_validation_errors(:edit)
   end
 
-  # DELETE /customers/1 or /customers/1.json
   def destroy
     @customer.destroy!
 
