@@ -57,7 +57,7 @@ class ReportsController < ApplicationController
     @monthly_gst_total = sum_gst_totals(@monthly_rows)
     @monthly_invoice_count = @monthly_rows.size
 
-    @monthly_daily_breakdown = @monthly_rows
+    grouped_daily_breakdown = @monthly_rows
       .group_by(&:first)
       .transform_values do |rows|
         {
@@ -67,10 +67,33 @@ class ReportsController < ApplicationController
           gst_total: sum_gst_totals(rows)
         }
       end
+
+    @monthly_daily_breakdown = grouped_daily_breakdown
       .sort_by { |date, _| date }
       .reverse
 
-    @monthwise_tally = invoice_rows
+    @daily_chart_points = grouped_daily_breakdown
+      .sort_by { |date, _| date }
+      .map do |date, totals|
+        {
+          label: date.strftime("%d %b"),
+          purchase_total: totals[:purchase_total],
+          gst_total: totals[:gst_total]
+        }
+      end
+
+    @daily_chart_series = [
+      {
+        name: "Purchase",
+        data: @daily_chart_points.map { |point| [point[:label], point[:purchase_total]] }
+      },
+      {
+        name: "GST",
+        data: @daily_chart_points.map { |point| [point[:label], point[:gst_total]] }
+      }
+    ]
+
+    grouped_monthwise_tally = invoice_rows
       .group_by { |invoice_date, *_| invoice_date.beginning_of_month }
       .transform_values do |rows|
         {
@@ -80,8 +103,36 @@ class ReportsController < ApplicationController
           gst_total: sum_gst_totals(rows)
         }
       end
+
+    @monthwise_tally = grouped_monthwise_tally
       .sort_by { |month, _| month }
       .reverse
+
+    @monthly_chart_points = grouped_monthwise_tally
+      .sort_by { |month, _| month }
+      .map do |month, totals|
+        {
+          label: month.strftime("%b %Y"),
+          purchase_total: totals[:purchase_total],
+          gst_total: totals[:gst_total]
+        }
+      end
+
+    @monthly_chart_series = [
+      {
+        name: "Purchase",
+        data: @monthly_chart_points.map { |point| [point[:label], point[:purchase_total]] }
+      },
+      {
+        name: "GST",
+        data: @monthly_chart_points.map { |point| [point[:label], point[:gst_total]] }
+      }
+    ]
+
+    @monthly_pie_data = [
+      ["CGST", @monthly_cgst_total.to_f],
+      ["SGST", @monthly_sgst_total.to_f]
+    ]
   end
 
   def parse_selected_date

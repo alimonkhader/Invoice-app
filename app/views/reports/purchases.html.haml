@@ -68,6 +68,7 @@
     %p.summary-note= "CGST + SGST received in #{@selected_month.strftime('%B %Y')}"
 
 .report-sections
+
   .table-card
     .table-card__header
       %div
@@ -131,3 +132,29 @@
       .empty-state
         %h3.empty-state__title No purchase history yet
         %p.muted.mb-0 Create invoices to generate report data.
+
+  .table-card
+    .table-card__header
+      %div
+        %h2.table-card__title GST breakdown
+        %p.muted.mb-0 CGST vs SGST share for #{@selected_month.strftime('%B %Y')}.
+    - if @monthly_pie_data.any? && @monthly_pie_data.sum { |_, value| value.to_f }.positive?
+      .chart-wrapper
+        %canvas#gst-pie-chart{height: "250", "aria-label": "GST split pie chart", role: "img", data: { chart_data: @monthly_pie_data.to_json }}
+    - else
+      .empty-state
+        %h3.empty-state__title GST data not available
+        %p.muted.mb-0 Generate invoices for the selected month to view GST share.
+
+  .table-card
+    .table-card__header
+      %div
+        %h2.table-card__title Monthly purchase & GST graph
+        %p.muted.mb-0 Column graph comparing purchase totals with GST across recent months.
+    - if @monthly_chart_series.any? && @monthly_chart_series.first[:data].any?
+      .chart-wrapper
+        %canvas#monthly-chart{height: "320", "aria-label": "Monthly purchases & GST graph", role: "img", data: { chart_data: @monthly_chart_series.to_json }}
+    - else
+      .empty-state
+        %h3.empty-state__title No monthly graph data yet
+        %p.muted.mb-0 Create invoices over multiple months to populate the graph.
