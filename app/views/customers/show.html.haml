@@ -1,0 +1,7 @@
+.card
+  = render @customer
+
+.actions
+  = link_to "Edit customer", edit_customer_path(@customer), class: "btn btn-primary"
+  = link_to "Back to customers", customers_path, class: "btn btn-secondary"
+  = button_to "Delete customer", @customer, method: :delete, class: "btn btn-danger"

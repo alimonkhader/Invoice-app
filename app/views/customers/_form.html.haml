@@ -1,0 +1,23 @@
+= form_with(model: customer) do |form|
+  - if customer.errors.any?
+    .error-box
+      %h2= "#{pluralize(customer.errors.count, "error")} prohibited this customer from being saved:"
+
+      %ul
+        - customer.errors.each do |error|
+          %li= error.full_message
+
+  .field
+    = form.label :name
+    = form.text_field :name
+
+  .field
+    = form.label :phone
+    = form.text_field :phone
+
+  .field
+    = form.label :email
+    = form.text_field :email
+
+  .actions
+    = form.submit "Save Customer", class: "btn btn-primary"

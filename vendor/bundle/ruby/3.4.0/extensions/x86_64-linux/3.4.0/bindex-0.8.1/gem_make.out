@@ -1,0 +1,18 @@
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/bindex-0.8.1/ext/skiptrace
+/home/alimon/.rvm/rubies/ruby-3.4.5/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260324-59503-udn8st sitelibdir\=./.gem.20260324-59503-udn8st clean
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260324-59503-udn8st sitelibdir\=./.gem.20260324-59503-udn8st
+compiling cruby.c
+linking shared-object skiptrace/internal/cruby.so
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260324-59503-udn8st sitelibdir\=./.gem.20260324-59503-udn8st install
+/usr/bin/install -c -m 0755 cruby.so ./.gem.20260324-59503-udn8st/skiptrace/internal
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/bindex-0.8.1/ext/skiptrace
+make DESTDIR\= sitearchdir\=./.gem.20260324-59503-udn8st sitelibdir\=./.gem.20260324-59503-udn8st clean

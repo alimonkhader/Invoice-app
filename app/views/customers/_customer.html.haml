@@ -1,0 +1,15 @@
+.card{id: dom_id(customer)}
+  .card-row
+    %div
+      %h3{ style: "margin: 0 0 0.25rem 0;" }= customer.name
+      %p.muted{ style: "margin: 0;" }= customer.email
+    = link_to "View", customer, class: "btn btn-secondary btn-sm"
+
+  .meta-grid
+    .meta-item
+      %span.meta-label Phone
+      %span.meta-value= customer.phone.presence || "N/A"
+    .meta-item
+      %span.meta-label Email
+      %span.meta-value= customer.email.presence || "N/A"
+

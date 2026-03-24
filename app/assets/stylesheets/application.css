@@ -1,0 +1,187 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+:root {
+  --bs-success: #1f8a4c;
+  --bs-success-rgb: 31, 138, 76;
+  --bs-danger: #b63a3a;
+  --bs-danger-rgb: 182, 58, 58;
+  --bs-primary: #1f8a4c;
+  --bs-primary-rgb: 31, 138, 76;
+  --bs-link-color: #1f8a4c;
+  --bs-link-hover-color: #17663a;
+  --bs-border-radius: 0.75rem;
+  --bs-body-font-family: "Nunito", "Segoe UI", sans-serif;
+}
+
+body {
+  background: linear-gradient(180deg, #f3fff7 0%, #edf9f1 55%, #f7fdf9 100%);
+  color: #352f2f;
+}
+
+.app-navbar {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+}
+
+.brand {
+  color: #1f8a4c !important;
+}
+
+.app-main {
+  padding-top: 1.5rem;
+  padding-bottom: 2rem;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 700;
+}
+
+.stack {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.card {
+  border: 1px solid #e7ece8;
+  box-shadow: 0 8px 24px rgba(35, 35, 35, 0.05);
+}
+
+.card-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.muted {
+  color: #7a7272;
+}
+
+.meta-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.meta-item {
+  padding: 0.7rem;
+  background: #f7faf8;
+  border: 1px solid #e4ede7;
+  border-radius: 0.7rem;
+}
+
+.meta-label {
+  color: #7a7272;
+  font-size: 0.84rem;
+  display: block;
+}
+
+.meta-value {
+  font-weight: 700;
+}
+
+.form-card {
+  padding: 0.8rem;
+  border: 1px solid #e7ece8;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(35, 35, 35, 0.05);
+}
+
+.field {
+  margin-bottom: 0.55rem;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+}
+
+.field input,
+.field select,
+.field textarea,
+.btn {
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  font-size: 0.92rem;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.summary {
+  margin-top: 1rem;
+}
+
+.summary strong {
+  min-width: 120px;
+  display: inline-block;
+}
+
+.actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+}
+
+form.button_to {
+  margin: 0;
+}
+
+.error-box {
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border: 1px solid #f2c2c2;
+  border-radius: 0.7rem;
+  background: #fff3f3;
+  color: #8e3434;
+}
+
+@media (max-width: 760px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .item {
+    grid-template-columns: 1fr;
+  }
+}

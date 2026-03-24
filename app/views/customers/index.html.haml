@@ -1,0 +1,9 @@
+- content_for :title, "Customers"
+
+.page-header
+  %h1.page-title Customers
+  = link_to "New customer", new_customer_path, class: "btn btn-primary"
+
+#customers.stack
+  - @customers.each do |customer|
+    = render customer

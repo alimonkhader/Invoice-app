@@ -1,0 +1,15 @@
+<p>Hello <%= @customer.name %>,</p>
+
+<p>
+  Please find attached your invoice
+  <strong>#<%= @invoice.invoice_number.presence || @invoice.id %></strong>
+  for
+  <strong><%= number_to_currency(@invoice.final_total.to_f, unit: "₹", precision: 2) %></strong>.
+</p>
+
+<p>
+  You can also view it online:
+  <a href="<%= invoice_url(@invoice, format: :pdf) %>"><%= invoice_url(@invoice, format: :pdf) %></a>
+</p>
+
+<p>Thank you.</p>

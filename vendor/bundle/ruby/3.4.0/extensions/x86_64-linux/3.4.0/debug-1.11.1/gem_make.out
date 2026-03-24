@@ -1,0 +1,19 @@
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/debug-1.11.1/ext/debug
+/home/alimon/.rvm/rubies/ruby-3.4.5/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260324-60584-h0bcz4 sitelibdir\=./.gem.20260324-60584-h0bcz4 clean
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260324-60584-h0bcz4 sitelibdir\=./.gem.20260324-60584-h0bcz4
+compiling debug.c
+compiling iseq_collector.c
+linking shared-object debug/debug.so
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260324-60584-h0bcz4 sitelibdir\=./.gem.20260324-60584-h0bcz4 install
+/usr/bin/install -c -m 0755 debug.so ./.gem.20260324-60584-h0bcz4/debug
+
+current directory: /home/alimon/invoice_app/vendor/bundle/ruby/3.4.0/gems/debug-1.11.1/ext/debug
+make DESTDIR\= sitearchdir\=./.gem.20260324-60584-h0bcz4 sitelibdir\=./.gem.20260324-60584-h0bcz4 clean

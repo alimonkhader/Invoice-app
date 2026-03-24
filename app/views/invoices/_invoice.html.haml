@@ -1,0 +1,18 @@
+.card{id: dom_id(invoice)}
+  .card-row
+    %div
+      %h3{ style: "margin: 0 0 0.3rem 0;" }= "Invoice ##{invoice.invoice_number.presence || invoice.id}"
+      %p.muted{ style: "margin: 0;" }= "Customer: #{invoice.customer&.name || 'N/A'}"
+    = link_to "View", invoice, class: "btn btn-secondary btn-sm"
+
+  .meta-grid
+    .meta-item
+      %span.meta-label Date
+      %span.meta-value= invoice.date || invoice.created_at&.to_date
+    .meta-item
+      %span.meta-label Subtotal
+      %span.meta-value= number_to_currency(invoice.total.to_f, unit: "₹", precision: 2)
+    .meta-item
+      %span.meta-label Final Total
+      %span.meta-value= number_to_currency(invoice.final_total.to_f, unit: "₹", precision: 2)
+

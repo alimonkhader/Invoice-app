@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  invoice_number: MyString
+  date: 2026-03-17
+  customer: one
+  total: 9.99
+
+two:
+  invoice_number: MyString
+  date: 2026-03-17
+  customer: two
+  total: 9.99

@@ -1,0 +1,7 @@
+Hello <%= @customer.name %>,
+
+Please find attached your invoice #<%= @invoice.invoice_number.presence || @invoice.id %> for <%= number_to_currency(@invoice.final_total.to_f, unit: "₹", precision: 2) %>.
+
+View online: <%= invoice_url(@invoice, format: :pdf) %>
+
+Thank you.

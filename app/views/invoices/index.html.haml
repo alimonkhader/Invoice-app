@@ -1,0 +1,9 @@
+- content_for :title, "Invoices"
+
+.page-header
+  %h1.page-title Invoices
+  = link_to "New invoice", new_invoice_path, class: "btn btn-primary"
+
+#invoices.stack
+  - @invoices.each do |invoice|
+    = render invoice
