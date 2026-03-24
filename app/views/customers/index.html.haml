@@ -1,8 +1,12 @@
 - content_for :title, "Customers"
 
-.page-header
-  %h1.page-title Customers
-  = link_to "New customer", new_customer_path, class: "btn btn-primary"
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Customer book
+    %h1.page-title Customers
+    %p.page-subtitle View customer contact details in the same visual style as the invoice workspace.
+  .page-hero__panel
+    = link_to "New customer", new_customer_path, class: "btn btn-primary"
 
 #customers.stack
   - @customers.each do |customer|

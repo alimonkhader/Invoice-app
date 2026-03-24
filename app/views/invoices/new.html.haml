@@ -1,10 +1,16 @@
 - content_for :title, "New invoice"
 
-.page-header
-  %h1.page-title New invoice
+.page-hero
+  .page-hero__content
+    %span.eyebrow Billing workspace
+    %h1.page-title New invoice
+    %p.page-subtitle Build a polished invoice, add items quickly, and share it as PDF, email, or WhatsApp.
+  .page-hero__panel
+    %span.hero-pill Green theme
+    %p.mb-0 Soft contrast, cleaner hierarchy, and faster scanning for daily invoicing.
 
 .form-card
   = render "form", invoice: @invoice
 
-.actions
+.actions.actions--compact
   = link_to "Back to invoices", invoices_path, class: "btn btn-secondary"

@@ -1,11 +1,17 @@
 - content_for :title, "Editing invoice"
 
-.page-header
-  %h1.page-title Edit invoice
+.page-hero
+  .page-hero__content
+    %span.eyebrow Invoice update
+    %h1.page-title Edit invoice
+    %p.page-subtitle Refine invoice details, line items, and customer information without leaving the billing flow.
+  .page-hero__panel
+    %span.hero-pill Invoice care
+    %p.mb-0 Keep customer details, amounts, and delivery actions aligned in one place.
 
 .form-card
   = render "form", invoice: @invoice
 
-.actions
+.actions.actions--compact
   = link_to "View invoice", @invoice, class: "btn btn-secondary"
   = link_to "Back to invoices", invoices_path, class: "btn btn-secondary"
