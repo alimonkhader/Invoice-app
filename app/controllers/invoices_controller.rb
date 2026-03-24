@@ -11,13 +11,14 @@ class InvoicesController < ApplicationController
     "created_at" => "invoices.created_at"
   }.freeze
 
-  before_action :require_portal_authentication
+  before_action :require_account_authentication
+  before_action :redirect_if_invoice_limit_reached, only: %i[new create]
   before_action :set_invoice, only: %i[show edit update destroy send_email share_whatsapp]
 
   helper_method :current_sort, :current_direction
 
   def index
-    invoices_scope = Invoice.left_joins(:customer).includes(:customer)
+    invoices_scope = current_account_user.invoices.left_joins(:customer).includes(:customer)
     invoices_scope = apply_search(invoices_scope)
     invoices_scope = invoices_scope.order(Arel.sql("#{sort_column} #{sort_direction}, invoices.created_at DESC"))
 
@@ -46,6 +47,7 @@ class InvoicesController < ApplicationController
 
   def create
     @invoice = Invoice.new(invoice_params)
+    @invoice.user = current_account_user
     assign_customer_from_input(@invoice)
 
     respond_to do |format|
@@ -105,7 +107,21 @@ class InvoicesController < ApplicationController
   private
 
   def set_invoice
-    @invoice = Invoice.includes(:customer, :invoice_items).find(params[:id])
+    @invoice = current_account_user.invoices.includes(:customer, :invoice_items).find(params[:id])
+  end
+
+  def redirect_if_invoice_limit_reached
+    return unless invoice_limit_reached?
+
+    redirect_to invoices_path, alert: "Your current plan has reached its invoice limit. Please renew or upgrade your package."
+  end
+
+  def invoice_limit_reached?
+    current_account_user.invoice_limit.present? && current_account_user.invoices.count >= current_account_user.invoice_limit
+  end
+
+  def scoped_customers
+    current_account_user.customers
   end
 
   def invoice_params
@@ -150,9 +166,10 @@ class InvoicesController < ApplicationController
       return
     end
 
-    customer = find_matching_customer(name, phone) || Customer.new
+    customer = find_matching_customer(name, phone) || scoped_customers.new
     customer.name = name if name.present?
     customer.phone = phone if phone.present?
+    customer.user = current_account_user
 
     if customer.name.blank?
       invoice.errors.add(:base, "Customer name is required when adding customer details.")
@@ -168,8 +185,8 @@ class InvoicesController < ApplicationController
   end
 
   def find_matching_customer(name, phone)
-    return Customer.find_by(phone: phone) if phone.present?
-    return Customer.where("LOWER(name) = ?", name.downcase).first if name.present?
+    return scoped_customers.find_by(phone: phone) if phone.present?
+    return scoped_customers.where("LOWER(name) = ?", name.downcase).first if name.present?
 
     nil
   end

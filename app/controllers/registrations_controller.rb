@@ -1,12 +1,18 @@
 class RegistrationsController < ApplicationController
+  RENEWAL_NOTICE_DAYS = 7
+
+  before_action :redirect_admin_users!
   before_action :set_plan
+  before_action :ensure_plan_available_for_current_user!, if: :account_authenticated?
 
   def new
-    @user = @plan.users.new(role: "account_admin")
+    @user = registration_user
   end
 
   def create
-    @user = @plan.users.new(user_params.merge(role: "account_admin"))
+    @user = registration_user
+    @user.assign_attributes(user_params)
+    @user.role = "account_admin"
 
     if @plan.price.zero?
       complete_free_registration
@@ -17,20 +23,35 @@ class RegistrationsController < ApplicationController
 
   private
 
+  def redirect_admin_users!
+    return unless admin_authenticated?
+
+    redirect_to root_path, alert: "Super admin accounts cannot purchase or renew plans."
+  end
+
   def set_plan
     @plan = Plan.find(params[:plan_id])
   end
 
+  def registration_user
+    return current_account_user if account_authenticated?
+
+    @plan.users.new(role: "account_admin")
+  end
+
   def user_params
-    params.require(:user).permit(:company_name, :name, :email, :phone, :password)
+    permitted = %i[company_name name email phone]
+    permitted << :password if params.dig(:user, :password).present? || !account_authenticated?
+    params.require(:user).permit(*permitted)
   end
 
   def complete_free_registration
+    @user.plan = @plan
     @user.active = true
     @user.status = "active"
 
     if @user.save
-      redirect_to login_path, notice: "Registration completed for the #{@plan.name} plan. You can log in now."
+      redirect_to(account_authenticated? ? root_path(anchor: "plans") : login_path, notice: success_message_for_free_plan)
     else
       render :new, status: :unprocessable_entity
     end
@@ -43,22 +64,43 @@ class RegistrationsController < ApplicationController
       return
     end
 
+    if account_authenticated?
+      build_paid_purchase_for_existing_account
+    else
+      build_paid_purchase_for_new_account
+    end
+  end
+
+  def build_paid_purchase_for_existing_account
+    purchase = ActiveRecord::Base.transaction do
+      @user.save! if @user.changed?
+      create_plan_purchase!(@user)
+    end
+
+    redirect_to plan_purchase_path(purchase), notice: "Complete the payment to renew or switch your plan."
+  rescue ActiveRecord::RecordInvalid
+    render :new, status: :unprocessable_entity
+  rescue RazorpayClient::Error => e
+    @user.errors.add(:base, e.message)
+    render :new, status: :unprocessable_entity
+  end
+
+  def build_paid_purchase_for_new_account
+    @user.plan = @plan
     @user.active = false
     @user.status = "payment_pending"
 
-    begin
-      purchase = ActiveRecord::Base.transaction do
-        @user.save!
-        create_plan_purchase!(@user)
-      end
-
-      redirect_to plan_purchase_path(purchase), notice: "Registration saved. Complete the Razorpay payment to activate your account."
-    rescue ActiveRecord::RecordInvalid
-      render :new, status: :unprocessable_entity
-    rescue RazorpayClient::Error => e
-      @user.errors.add(:base, e.message)
-      render :new, status: :unprocessable_entity
+    purchase = ActiveRecord::Base.transaction do
+      @user.save!
+      create_plan_purchase!(@user)
     end
+
+    redirect_to plan_purchase_path(purchase), notice: "Registration saved. Complete the Razorpay payment to activate your account."
+  rescue ActiveRecord::RecordInvalid
+    render :new, status: :unprocessable_entity
+  rescue RazorpayClient::Error => e
+    @user.errors.add(:base, e.message)
+    render :new, status: :unprocessable_entity
   end
 
   def create_plan_purchase!(user)
@@ -84,5 +126,31 @@ class RegistrationsController < ApplicationController
       razorpay_order_id: order.fetch("id"),
       order_payload: order
     )
+  end
+
+  def ensure_plan_available_for_current_user!
+    return if plan_available_for_current_user?
+
+    redirect_to root_path(anchor: "plans"), alert: "That plan is not available for your account right now."
+  end
+
+  def plan_available_for_current_user?
+    return true if current_account_user.plan.blank?
+    return false unless current_plan_renewable?
+
+    @plan.price <= current_account_user.plan.price
+  end
+
+  def current_plan_renewable?
+    return true if current_account_user.plan.price.to_i.zero?
+    return true if current_account_user.expires_on.blank?
+
+    current_account_user.expires_on <= (Date.current + RENEWAL_NOTICE_DAYS)
+  end
+
+  def success_message_for_free_plan
+    return "Plan updated successfully." if account_authenticated?
+
+    "Registration completed for the #{@plan.name} plan. You can log in now."
   end
 end

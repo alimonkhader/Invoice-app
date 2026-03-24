@@ -12,7 +12,11 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account_user
-    @current_account_user ||= User.active_account_admins.find_by(id: session[:user_id]) if session[:user_id].present?
+    return nil unless user_signed_in?
+    return nil unless current_user.account_admin?
+    return nil unless current_user.active?
+
+    current_user
   end
 
   def account_authenticated?
@@ -29,6 +33,12 @@ class ApplicationController < ActionController::Base
     redirect_to admin_login_path, alert: "Please log in as admin to continue."
   end
 
+  def require_account_authentication
+    return if account_authenticated?
+
+    redirect_to login_path, alert: "Please log in as an account user to continue."
+  end
+
   def require_portal_authentication
     return if portal_authenticated?
 
@@ -36,7 +46,6 @@ class ApplicationController < ActionController::Base
   end
 
   def require_excel_reports_access
-    return if admin_authenticated?
     return if current_account_user&.excel_reports_enabled?
 
     redirect_to purchase_reports_path(month: params[:month]), alert: "Your current plan does not include XLSX report export."

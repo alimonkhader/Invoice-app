@@ -1,8 +1,19 @@
 Rails.application.routes.draw do
+  devise_for :users,
+             skip: [:registrations],
+             controllers: {
+               sessions: "users/sessions",
+               passwords: "users/passwords"
+             }
+
+  devise_scope :user do
+    get "login", to: "users/sessions#new", as: :login
+    delete "logout", to: "devise/sessions#destroy", as: :logout
+  end
+
   root "home#index"
 
-  resource :user_session, only: %i[create destroy]
-  get "login", to: "user_sessions#new", as: :login
+  resource :settings, only: %i[show update], controller: :account_settings
 
   resources :plan_purchases, only: :show do
     member do

@@ -1,23 +1,23 @@
 class CustomersController < ApplicationController
-  before_action :require_portal_authentication
+  before_action :require_account_authentication
   before_action :set_customer, only: %i[show edit update destroy]
 
   def index
-    @customers = Customer.order(:name)
+    @customers = current_account_user.customers.order(:name)
   end
 
   def show
   end
 
   def new
-    @customer = Customer.new
+    @customer = current_account_user.customers.new
   end
 
   def edit
   end
 
   def create
-    @customer = Customer.new(customer_params)
+    @customer = current_account_user.customers.new(customer_params)
 
     return render_create_success if @customer.save
 
@@ -42,7 +42,7 @@ class CustomersController < ApplicationController
   private
 
   def set_customer
-    @customer = Customer.find(params.expect(:id))
+    @customer = current_account_user.customers.find(params.expect(:id))
   end
 
   def customer_params

@@ -1,0 +1,30 @@
+- content_for :title, "Change Password"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Password recovery
+    %h1.page-title Choose a new password
+    %p.page-subtitle Set a new password for your account and sign in again.
+  .page-hero__panel
+    %span.hero-pill Secure reset
+    %p.mb-0 Pick a strong password you have not used before.
+
+.form-card
+  = form_with model: resource, as: resource_name, url: password_path(resource_name), method: :put do |f|
+    = f.hidden_field :reset_password_token
+    .section-card
+      .section-head
+        %div
+          %h3.section-title New password
+          %p.section-copy Your password will be updated immediately after a valid reset link is used.
+      .form-grid
+        .field
+          = f.label :password, "New password"
+          = f.password_field :password, autocomplete: "new-password", class: "form-control", placeholder: "New password"
+        .field
+          = f.label :password_confirmation, "Confirm password"
+          = f.password_field :password_confirmation, autocomplete: "new-password", class: "form-control", placeholder: "Confirm password"
+
+    .actions
+      = f.submit "Update password", class: "btn btn-primary"
+      = link_to "Back to login", login_path, class: "btn btn-outline-secondary"

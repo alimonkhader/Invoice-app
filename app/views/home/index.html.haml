@@ -4,14 +4,31 @@
   .page-hero__content
     %span.eyebrow Invoice platform
     %h1.page-title Plans, billing, and invoice operations in one place.
-    %p.page-subtitle Launch the product from a proper home page with clear plans, product features, registration flow, and login access for both purchased accounts and admins.
+    - if account_authenticated?
+      %p.page-subtitle Manage your current package, renew close to expiry, and move only to eligible lower-priced plans.
+    - elsif admin_authenticated?
+      %p.page-subtitle Super admins manage plans and registered accounts here. Purchase and renewal options stay hidden from the admin workspace.
+    - else
+      %p.page-subtitle Launch the product from a proper home page with clear plans, product features, registration flow, and login access for both purchased accounts and admins.
     .actions.actions--compact
-      = link_to "View Plans", "#plans", class: "btn btn-primary"
-      = link_to "Account Login", login_path, class: "btn btn-outline-secondary"
-      = link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary"
+      - unless admin_authenticated?
+        = link_to "View Plans", "#plans", class: "btn btn-primary"
+      - unless account_authenticated? || admin_authenticated?
+        = link_to "Account Login", login_path, class: "btn btn-outline-secondary"
+        = link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary"
   .page-hero__panel
-    %span.hero-pill Product features
-    %p.mb-0 Trial starts free, Basic unlocks monthly unlimited invoices, and Premium adds a 3-month cycle with Excel reporting.
+    - if account_authenticated?
+      %span.hero-pill Current package
+      %p.mb-1= @current_plan_user.plan&.name || "No active plan"
+      %p.mb-1= @current_plan_user.expires_on ? "Expires on #{@current_plan_user.expires_on.strftime('%d %b %Y')}" : "No expiry date"
+      %p.mb-0= @show_account_plan_options ? "Renewal or lower-plan options are available below." : "Your current package is active, so extra plans are hidden for now."
+    - elsif admin_authenticated?
+      %span.hero-pill Admin workspace
+      %p.mb-1 Manage plans, registrations, and account visibility.
+      %p.mb-0 Pricing and purchase actions are hidden while you are logged in as super admin.
+    - else
+      %span.hero-pill Product features
+      %p.mb-0 Trial starts free, Basic unlocks monthly unlimited invoices, and Premium adds a 3-month cycle with Excel reporting.
 
 .feature-grid
   - @feature_groups.each do |feature|
@@ -20,29 +37,43 @@
       %h3.card-title= feature[:title]
       %p.muted.mb-0= feature[:description]
 
-#plans.page-section
-  .section-heading
-    %div
-      %span.eyebrow Pricing
-      %h2.section-title Choose a plan
-      %p.muted.mb-0 Start with Trial or register directly for a paid plan.
-  .plan-grid
-    - @plans.each do |plan|
-      .card.plan-card
-        %span.card-kicker= plan.name
-        %h3.card-title
-          - if plan.price.zero?
-            Free
+- unless admin_authenticated?
+  #plans.page-section
+    .section-heading
+      %div
+        %span.eyebrow Pricing
+        - if account_authenticated?
+          %h2.section-title Renewal and plan options
+          - if @show_account_plan_options
+            %p.muted.mb-0 Only renewal and lower-priced plans are shown for your logged-in account.
           - else
-            = number_to_currency(plan.price, unit: "₹", precision: 0)
-        %p.plan-meta= plan.duration_label
-        %p.muted= plan.description
-        %ul.plan-features
-          %li= plan.unlimited_invoices? ? "Unlimited invoices" : "#{plan.invoice_limit} invoices included"
-          %li= plan.excel_reports ? "Excel report export included" : "Excel report export not included"
-          %li= plan.active? ? "Available for signup" : "Currently inactive"
-        .actions.actions--compact
-          = link_to "Register", new_plan_registration_path(plan), class: "btn btn-primary"
+            %p.muted.mb-0 Your current plan is still active, so package choices are hidden until renewal time.
+        - else
+          %h2.section-title Choose a plan
+          %p.muted.mb-0 Start with Trial or register directly for a paid plan.
+    - if @plans.any?
+      .plan-grid
+        - @plans.each do |plan|
+          - cta_label = account_authenticated? ? (@current_plan_user.plan == plan ? "Renew Plan" : "Switch Plan") : "Register"
+          .card.plan-card
+            %span.card-kicker= plan.name
+            %h3.card-title
+              - if plan.price.zero?
+                Free
+              - else
+                = number_to_currency(plan.price, unit: "₹", precision: 0)
+            %p.plan-meta= plan.duration_label
+            %p.muted= plan.description
+            %ul.plan-features
+              %li= plan.unlimited_invoices? ? "Unlimited invoices" : "#{plan.invoice_limit} invoices included"
+              %li= plan.excel_reports ? "Excel report export included" : "Excel report export not included"
+              %li= plan.active? ? "Available for signup" : "Currently inactive"
+            .actions.actions--compact
+              = link_to cta_label, new_plan_registration_path(plan), class: "btn btn-primary"
+    - elsif account_authenticated?
+      .empty-state
+        %h3.empty-state__title No package action needed now
+        %p.muted.mb-0 Your account can continue on the current plan until the renewal window opens.
 
 .page-section
   .section-heading

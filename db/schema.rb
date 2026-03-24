@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_24_170000) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_24_193000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_170000) do
     t.string "email"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "user_id"
+    t.index ["user_id"], name: "index_customers_on_user_id"
   end
 
   create_table "invoice_items", force: :cascade do |t|
@@ -53,7 +55,9 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_170000) do
     t.string "company_name"
     t.string "address"
     t.string "phone"
+    t.bigint "user_id"
     t.index ["customer_id"], name: "index_invoices_on_customer_id"
+    t.index ["user_id"], name: "index_invoices_on_user_id"
   end
 
   create_table "plan_purchases", force: :cascade do |t|
@@ -113,13 +117,21 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_24_170000) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.boolean "gst_enabled", default: true, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["plan_id"], name: "index_users_on_plan_id"
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["role"], name: "index_users_on_role"
   end
 
+  add_foreign_key "customers", "users"
   add_foreign_key "invoice_items", "invoices"
   add_foreign_key "invoices", "customers"
+  add_foreign_key "invoices", "users"
   add_foreign_key "plan_purchases", "plans"
   add_foreign_key "plan_purchases", "users"
   add_foreign_key "users", "plans"

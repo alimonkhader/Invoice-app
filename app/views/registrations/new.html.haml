@@ -3,11 +3,18 @@
 .page-hero.page-hero--tight
   .page-hero__content
     %span.eyebrow Plan registration
-    %h1.page-title= "Register for #{@plan.name}"
-    - if @plan.price.zero?
-      %p.page-subtitle Complete the registration and activate your free plan instantly.
+    - if account_authenticated?
+      %h1.page-title= "Update to #{@plan.name}"
+      - if @plan.price.zero?
+        %p.page-subtitle Switch your current account to this lower plan immediately.
+      - else
+        %p.page-subtitle Confirm your account details and continue to Razorpay to renew or change the package.
     - else
-      %p.page-subtitle Save the account details first, then complete the Razorpay payment to activate the plan.
+      %h1.page-title= "Register for #{@plan.name}"
+      - if @plan.price.zero?
+        %p.page-subtitle Complete the registration and activate your free plan instantly.
+      - else
+        %p.page-subtitle Save the account details first, then complete the Razorpay payment to activate the plan.
   .page-hero__panel
     %span.hero-pill Plan details
     %p.mb-1= @plan.duration_label
@@ -28,7 +35,7 @@
       .section-head
         %div
           %h3.section-title Account details
-          %p.section-copy These details will be stored as a plan user with the account admin role.
+          %p.section-copy These details will be stored for the account admin profile used in billing and plan access.
       .form-grid
         .field
           = f.label :company_name, "Company name"
@@ -43,9 +50,10 @@
           = f.label :phone, "Phone"
           = f.telephone_field :phone, class: "form-control", placeholder: "Phone number"
         .field
-          = f.label :password, "Password"
-          = f.password_field :password, class: "form-control", placeholder: "Create password"
+          = f.label :password, account_authenticated? ? "New password (optional)" : "Password"
+          = f.password_field :password, class: "form-control", placeholder: account_authenticated? ? "Leave blank to keep current password" : "Create password"
 
+    - submit_label = @plan.price.zero? ? (account_authenticated? ? "Switch Plan" : "Complete Registration") : (account_authenticated? ? "Continue to Renewal Payment" : "Continue to Payment")
     .actions
-      = f.submit(@plan.price.zero? ? "Complete Registration" : "Continue to Payment", class: "btn btn-primary")
+      = f.submit(submit_label, class: "btn btn-primary")
       = link_to "Back to plans", root_path(anchor: "plans"), class: "btn btn-outline-secondary"

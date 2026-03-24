@@ -1,4 +1,4 @@
-# Invoice App
+# Nilam Invoice
 
 ## Invoice Delivery
 
@@ -18,4 +18,3 @@ The app supports invoice delivery from the invoice detail page:
 Configure Action Mailer SMTP settings for your environment (`development.rb` / `production.rb`), for example using Gmail/SendGrid/SES.
 
 Without SMTP configuration, email buttons will queue mail but actual delivery may fail or be skipped depending on environment settings.
-# Invoice-app

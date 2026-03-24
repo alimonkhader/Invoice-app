@@ -23,18 +23,26 @@
       .meta-item
         %span.meta-label Company
         %span.meta-value= @invoice.company_name
+      .meta-item
+        %span.meta-label Tax mode
+        %span.meta-value= @invoice.gst_enabled? ? "GST enabled" : "GST disabled"
 
   .card.summary-card.summary-card--totals
     .summary-card__label Invoice summary
     .summary-line
       %span Subtotal
       %strong= number_to_currency(@invoice.total.to_f, unit: "₹", precision: 2)
-    .summary-line
-      %span CGST (9%)
-      %strong= number_to_currency(@invoice.cgst.to_f, unit: "₹", precision: 2)
-    .summary-line
-      %span SGST (9%)
-      %strong= number_to_currency(@invoice.sgst.to_f, unit: "₹", precision: 2)
+    - if @invoice.gst_enabled?
+      .summary-line
+        %span CGST (9%)
+        %strong= number_to_currency(@invoice.cgst.to_f, unit: "₹", precision: 2)
+      .summary-line
+        %span SGST (9%)
+        %strong= number_to_currency(@invoice.sgst.to_f, unit: "₹", precision: 2)
+    - else
+      .summary-line
+        %span GST
+        %strong Not applied
     .summary-line.summary-line--total
       %span Final Total
       %strong= number_to_currency(@invoice.final_total.to_f, unit: "₹", precision: 2)

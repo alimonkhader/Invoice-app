@@ -36,6 +36,7 @@ class PlanPurchase < ApplicationRecord
         failure_reason: nil,
         failed_at: nil
       )
+      user.plan = plan
       user.activate_plan_access!
     end
   end

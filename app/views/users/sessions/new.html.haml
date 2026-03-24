@@ -1,0 +1,30 @@
+- content_for :title, "Account Login"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Account access
+    %h1.page-title Account login
+    %p.page-subtitle Sign in to manage your invoices, customers, reports, and plan renewals.
+  .page-hero__panel
+    %span.hero-pill Secure access
+    %p.mb-1 Use the email and password linked to your purchased plan.
+    %p.mb-0= link_to "Forgot password?", new_user_password_path, class: "link-secondary"
+
+.form-card
+  = form_with model: resource, as: resource_name, url: session_path(resource_name) do |f|
+    .section-card
+      .section-head
+        %div
+          %h3.section-title Credentials
+          %p.section-copy Account users authenticate with Devise and can reset passwords by email.
+      .form-grid
+        .field
+          = f.label :email, "Email"
+          = f.email_field :email, autofocus: true, autocomplete: "email", class: "form-control", placeholder: "you@example.com"
+        .field
+          = f.label :password, "Password"
+          = f.password_field :password, autocomplete: "current-password", class: "form-control", placeholder: "Password"
+
+    .actions
+      = f.submit "Login", class: "btn btn-primary"
+      = link_to "Forgot password?", new_user_password_path, class: "btn btn-outline-secondary"

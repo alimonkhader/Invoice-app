@@ -103,12 +103,16 @@ class InvoicePdfBuilder
   end
 
   def render_summary_table(pdf)
-    summary_data = [
-      ["Subtotal", inr(invoice.total)],
-      ["CGST (9%)", inr(invoice.cgst)],
-      ["SGST (9%)", inr(invoice.sgst)],
-      ["Final Total", inr(invoice.final_total)]
-    ]
+    summary_data = [["Subtotal", inr(invoice.total)]]
+
+    if invoice.gst_enabled?
+      summary_data << ["CGST (9%)", inr(invoice.cgst)]
+      summary_data << ["SGST (9%)", inr(invoice.sgst)]
+    else
+      summary_data << ["GST", "Not applied"]
+    end
+
+    summary_data << ["Final Total", inr(invoice.final_total)]
 
     pdf.table(summary_data, position: :right, width: 230, cell_style: { border_color: BORDER_COLOR, padding: 7, size: 10 }) do
       columns(1).align = :right
@@ -126,7 +130,7 @@ class InvoicePdfBuilder
     pdf.move_down 8
     pdf.fill_color MUTED_TEXT_COLOR
     pdf.text "Thank you for your business.", size: 9, align: :center
-    pdf.text "This is a system-generated invoice.", size: 8, align: :center
+    pdf.text(invoice.gst_enabled? ? "This is a system-generated invoice." : "This is a system-generated invoice without GST.", size: 8, align: :center)
     pdf.fill_color "000000"
   end
 

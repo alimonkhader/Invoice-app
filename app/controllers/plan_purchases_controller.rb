@@ -13,7 +13,7 @@ class PlanPurchasesController < ApplicationController
       key: RazorpayClient.key_id,
       amount: @plan_purchase.amount_in_subunits,
       currency: @plan_purchase.currency,
-      name: "Invoice App",
+      name: "Nilam Invoice",
       description: "#{@plan_purchase.plan.name} plan purchase",
       order_id: @plan_purchase.razorpay_order_id,
       prefill: {

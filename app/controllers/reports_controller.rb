@@ -1,5 +1,5 @@
 class ReportsController < ApplicationController
-  before_action :require_portal_authentication
+  before_action :require_account_authentication
   before_action :require_excel_reports_access, only: :monthly_purchases_xlsx
 
   def purchases
@@ -32,7 +32,7 @@ class ReportsController < ApplicationController
   private
 
   def load_purchase_report_data
-    invoice_rows = Invoice.order(:date, :created_at).pluck(
+    invoice_rows = current_account_user.invoices.order(:date, :created_at).pluck(
       Arel.sql("COALESCE(invoices.date, DATE(invoices.created_at))"),
       :final_total,
       :cgst,

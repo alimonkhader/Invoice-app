@@ -71,3 +71,13 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "devise", "~> 5.0"
+
+gem "rubocop", "~> 1.86", groups: [:development, :test]
+
+gem "rubocop-rails", "~> 2.34", groups: [:development, :test]
+
+gem "rubocop-performance", "~> 1.26", groups: [:development, :test]
+
+gem "brakeman", "~> 8.0", group: :development

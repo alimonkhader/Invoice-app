@@ -1,0 +1,35 @@
+- content_for :title, "Account settings"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Account preferences
+    %h1.page-title Settings
+    %p.page-subtitle Control invoice behavior for your account, including whether GST should be applied on generated invoices.
+  .page-hero__panel
+    %span.hero-pill Tax mode
+    %p.mb-1= @user.gst_enabled? ? "GST enabled" : "GST disabled"
+    %p.mb-0= @user.gst_enabled? ? "Invoices include CGST and SGST." : "Invoices are generated without GST."
+
+.form-card
+  = form_with model: @user, url: settings_path, method: :patch do |f|
+    - if @user.errors.any?
+      .error-box
+        %strong= "#{pluralize(@user.errors.count, 'error')} prevented settings from being saved:"
+        %ul
+          - @user.errors.full_messages.each do |message|
+            %li= message
+
+    .section-card
+      .section-head
+        %div
+          %h3.section-title Invoice tax settings
+          %p.section-copy Toggle GST application for invoices created under this account.
+      .form-check.form-switch.mt-3
+        = f.check_box :gst_enabled, class: "form-check-input"
+        = f.label :gst_enabled, "Apply GST on invoices", class: "form-check-label"
+      %p.muted.mt-3.mb-0
+        When disabled, new and updated invoices will save without CGST and SGST. Existing invoice records will also recalculate without GST when edited.
+
+    .actions
+      = f.submit "Save settings", class: "btn btn-primary"
+      = link_to "Back to invoices", invoices_path, class: "btn btn-secondary"

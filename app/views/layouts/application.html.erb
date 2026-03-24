@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "InvoiceApp" %></title>
+    <title><%= content_for(:title) || "Nilam Invoice" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
@@ -16,14 +16,20 @@
       <header class="navbar navbar-expand-lg app-navbar sticky-top">
         <div class="container py-3">
           <div>
-            <%= link_to "Invoice App", root_path, class: "navbar-brand fw-bold brand" %>
+            <%= link_to root_path, class: "navbar-brand fw-bold brand brand-lockup" do %>
+              <span class="brand-mark" aria-hidden="true">
+                <%= image_tag "nilam-coconut-logo.svg", alt: "", class: "brand-mark__image" %>
+              </span>
+              <span class="brand-copy">
+                <span class="brand-name">Nilam Invoice</span>
+                <span class="brand-tag">Kerala-ready billing</span>
+              </span>
+            <% end %>
             <p class="nav-caption mb-0">Plans, registrations, invoices, reports, and admin tools in one workspace.</p>
           </div>
           <nav class="ms-auto d-flex gap-2 flex-wrap justify-content-end">
             <%= link_to "Home", root_path, class: "btn btn-outline-secondary btn-sm" %>
             <% if admin_authenticated? %>
-              <%= link_to "Invoices", invoices_path, class: "btn btn-outline-secondary btn-sm" %>
-              <%= link_to "Reports", purchase_reports_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Admin Plans", admin_plans_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Accounts", admin_accounts_path, class: "btn btn-outline-secondary btn-sm" %>
               <span class="btn btn-outline-secondary btn-sm disabled"><%= current_admin.email %></span>
@@ -32,8 +38,9 @@
               <%= link_to "Invoices", invoices_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Customers", customers_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Reports", purchase_reports_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Settings", settings_path, class: "btn btn-outline-secondary btn-sm" %>
               <span class="btn btn-outline-secondary btn-sm disabled"><%= current_account_user.email %></span>
-              <%= button_to "Logout", user_session_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+              <%= button_to "Logout", logout_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
             <% else %>
               <%= link_to "Account Login", login_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary btn-sm" %>
@@ -53,6 +60,13 @@
 
         <%= yield %>
       </main>
+
+      <footer class="app-footer">
+        <div class="container app-footer__inner">
+          <p class="mb-0">&copy; <%= Date.current.year %> Nilam Invoice. All rights reserved.</p>
+          <p class="mb-0 app-footer__note">Built with Kerala-inspired green branding.</p>
+        </div>
+      </footer>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

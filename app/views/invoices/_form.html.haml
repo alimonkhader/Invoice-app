@@ -47,7 +47,10 @@
     %p.total-amount
       %strong ₹
       %span#total 0.00
-    %p.summary-note Taxes are added automatically when the invoice is saved.
+    - if current_account_user.gst_enabled?
+      %p.summary-note Taxes are added automatically when the invoice is saved.
+    - else
+      %p.summary-note GST is disabled in account settings, so this invoice will save without CGST and SGST.
 
   .actions
     = f.submit "Save Invoice", class: "btn btn-primary"
