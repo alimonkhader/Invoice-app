@@ -1,10 +1,14 @@
 - content_for :title, "Invoices"
 
-.page-header
-  %div
+.page-hero
+  .page-hero__content
+    %span.eyebrow Invoice overview
     %h1.page-title Invoices
-    %p.muted.mb-0 Manage, send, and track all invoices.
-  = link_to "New invoice", new_invoice_path, class: "btn btn-primary"
+    %p.page-subtitle Manage, review, and share invoices from a calmer dashboard with clearer totals and spacing.
+  .page-hero__panel
+    %span.hero-pill Dashboard
+    %p.mb-3 Keep recent invoices accessible and move into a new invoice in one click.
+    = link_to "New invoice", new_invoice_path, class: "btn btn-primary"
 
 #invoices.stack
   - @invoices.each do |invoice|

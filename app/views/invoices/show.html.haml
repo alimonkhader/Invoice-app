@@ -1,35 +1,43 @@
-.card
-  .card-row
-    %div
-      %h2{ style: "margin: 0;" }= "Invoice ##{@invoice.invoice_number.presence || @invoice.id}"
-      %p.muted.mb-0 Generated and ready to share
-    = link_to "Download PDF", invoice_path(@invoice, format: :pdf), class: "btn btn-outline-success btn-sm"
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Invoice details
+    %h1.page-title= "Invoice ##{@invoice.invoice_number.presence || @invoice.id}"
+    %p.page-subtitle Generated and ready to share across PDF, email, and WhatsApp.
+  .page-hero__panel
+    = link_to "Download PDF", invoice_path(@invoice, format: :pdf), class: "btn btn-outline-success"
 
-  .meta-grid
-    .meta-item
-      %span.meta-label Date
-      %span.meta-value= @invoice.date || @invoice.created_at&.to_date
-    .meta-item
-      %span.meta-label Customer
-      %span.meta-value= @invoice.customer&.name || "N/A"
-    .meta-item
-      %span.meta-label Company
-      %span.meta-value= @invoice.company_name
+.detail-grid
+  .card
+    .card-row
+      %div
+        %h2.card-title Invoice overview
+        %p.muted.mb-0 Core billing information for this invoice.
 
-  %h3{ style: "margin-top: 1rem;" } Invoice Summary
-  .summary
-    %p
-      %strong Subtotal:
-      = number_to_currency(@invoice.total.to_f, unit: "₹", precision: 2)
-    %p
-      %strong CGST (9%):
-      = number_to_currency(@invoice.cgst.to_f, unit: "₹", precision: 2)
-    %p
-      %strong SGST (9%):
-      = number_to_currency(@invoice.sgst.to_f, unit: "₹", precision: 2)
-    %p
-      %strong Final Total:
-      = number_to_currency(@invoice.final_total.to_f, unit: "₹", precision: 2)
+    .meta-grid
+      .meta-item
+        %span.meta-label Date
+        %span.meta-value= @invoice.date || @invoice.created_at&.to_date
+      .meta-item
+        %span.meta-label Customer
+        %span.meta-value= @invoice.customer&.name || "N/A"
+      .meta-item
+        %span.meta-label Company
+        %span.meta-value= @invoice.company_name
+
+  .card.summary-card.summary-card--totals
+    .summary-card__label Invoice summary
+    .summary-line
+      %span Subtotal
+      %strong= number_to_currency(@invoice.total.to_f, unit: "₹", precision: 2)
+    .summary-line
+      %span CGST (9%)
+      %strong= number_to_currency(@invoice.cgst.to_f, unit: "₹", precision: 2)
+    .summary-line
+      %span SGST (9%)
+      %strong= number_to_currency(@invoice.sgst.to_f, unit: "₹", precision: 2)
+    .summary-line.summary-line--total
+      %span Final Total
+      %strong= number_to_currency(@invoice.final_total.to_f, unit: "₹", precision: 2)
 
 .actions
   = link_to "Edit invoice", edit_invoice_path(@invoice), class: "btn btn-primary"

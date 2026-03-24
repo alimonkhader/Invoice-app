@@ -8,39 +8,46 @@
 
   .section-card
     .section-head
-      %h3.section-title Customer Details
-    .field
-      = label_tag "invoice_customer_name", "Customer name"
-      = text_field_tag "invoice[customer_name]", params.dig(:invoice, :customer_name).presence || invoice.customer&.name, placeholder: "Customer name"
+      %div
+        %h3.section-title Customer details
+        %p.section-copy Save invoice data with the customer attached directly from this form.
+    .form-grid
+      .field
+        = label_tag "invoice_customer_name", "Customer name"
+        = text_field_tag "invoice[customer_name]", params.dig(:invoice, :customer_name).presence || invoice.customer&.name, placeholder: "Customer name", class: "form-control"
 
-    .field
-      = label_tag "invoice_customer_phone", "Customer phone"
-      = text_field_tag "invoice[customer_phone]", params.dig(:invoice, :customer_phone).presence || invoice.customer&.phone, placeholder: "Phone number"
+      .field
+        = label_tag "invoice_customer_phone", "Customer phone"
+        = text_field_tag "invoice[customer_phone]", params.dig(:invoice, :customer_phone).presence || invoice.customer&.phone, placeholder: "Phone number", class: "form-control"
 
   .section-card
     .section-head
-      %h3.section-title Item Entry
+      %div
+        %h3.section-title Item entry
+        %p.section-copy Add line items manually or scan a price into the active row.
       %span.badge-soft Scan supported
 
     .field
       = label_tag "scan-price-input", "Scan price"
-      = text_field_tag :scan_price, nil, id: "scan-price-input", placeholder: "Scan and press Enter", autocomplete: "off"
+      = text_field_tag :scan_price, nil, id: "scan-price-input", placeholder: "Scan and press Enter", autocomplete: "off", class: "form-control"
       %small.muted Scanner value will fill the active row price.
 
   #items
     = f.fields_for :invoice_items do |item|
       .item
-        = item.text_field :name, placeholder: "Item name"
-        = item.number_field :quantity, placeholder: "Qty", class: "qty", min: 0, step: 1
-        = item.number_field :price, placeholder: "Price", class: "price", min: 0, step: "0.01"
+        = item.text_field :name, placeholder: "Item name", class: "form-control"
+        = item.number_field :quantity, placeholder: "Qty", class: "form-control qty", min: 0, step: 1
+        = item.number_field :price, placeholder: "Price", class: "form-control price", min: 0, step: "0.01"
 
-  %button#add-item.btn.btn-outline-success Add Item
+  .actions.actions--compact
+    %button#add-item.btn.btn-outline-success Add item
 
-  .summary
-    %h3{ style: "margin: 0.5rem 0 0;" } Total
-    %p.total-amount{ style: "margin: 0;" }
+  .summary-card
+    .summary-card__label Current subtotal
+    %p.total-amount
       %strong ₹
       %span#total 0.00
+    %p.summary-note Taxes are added automatically when the invoice is saved.
 
   .actions
     = f.submit "Save Invoice", class: "btn btn-primary"
