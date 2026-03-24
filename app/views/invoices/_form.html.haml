@@ -6,20 +6,26 @@
         - invoice.errors.full_messages.each do |message|
           %li= message
 
-  .field
-    = label_tag "invoice_customer_name", "Customer name"
-    = text_field_tag "invoice[customer_name]", params.dig(:invoice, :customer_name).presence || invoice.customer&.name, placeholder: "Customer name"
+  .section-card
+    .section-head
+      %h3.section-title Customer Details
+    .field
+      = label_tag "invoice_customer_name", "Customer name"
+      = text_field_tag "invoice[customer_name]", params.dig(:invoice, :customer_name).presence || invoice.customer&.name, placeholder: "Customer name"
 
-  .field
-    = label_tag "invoice_customer_phone", "Customer phone"
-    = text_field_tag "invoice[customer_phone]", params.dig(:invoice, :customer_phone).presence || invoice.customer&.phone, placeholder: "Phone number"
+    .field
+      = label_tag "invoice_customer_phone", "Customer phone"
+      = text_field_tag "invoice[customer_phone]", params.dig(:invoice, :customer_phone).presence || invoice.customer&.phone, placeholder: "Phone number"
 
-  %h3 Items
+  .section-card
+    .section-head
+      %h3.section-title Item Entry
+      %span.badge-soft Scan supported
 
-  .field
-    = label_tag "scan-price-input", "Scan price"
-    = text_field_tag :scan_price, nil, id: "scan-price-input", placeholder: "Scan and press Enter", autocomplete: "off"
-    %small.muted Scanner value will fill the active row price.
+    .field
+      = label_tag "scan-price-input", "Scan price"
+      = text_field_tag :scan_price, nil, id: "scan-price-input", placeholder: "Scan and press Enter", autocomplete: "off"
+      %small.muted Scanner value will fill the active row price.
 
   #items
     = f.fields_for :invoice_items do |item|
@@ -28,11 +34,11 @@
         = item.number_field :quantity, placeholder: "Qty", class: "qty", min: 0, step: 1
         = item.number_field :price, placeholder: "Price", class: "price", min: 0, step: "0.01"
 
-  %button#add-item.btn.btn-secondary Add Item
+  %button#add-item.btn.btn-outline-success Add Item
 
   .summary
     %h3{ style: "margin: 0.5rem 0 0;" } Total
-    %p{ style: "margin: 0;" }
+    %p.total-amount{ style: "margin: 0;" }
       %strong ₹
       %span#total 0.00
 
