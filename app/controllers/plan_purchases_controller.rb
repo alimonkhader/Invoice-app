@@ -72,10 +72,10 @@ class PlanPurchasesController < ApplicationController
 
   def set_plan_purchase
     @plan_purchase = if account_authenticated?
-      current_account_user.plan_purchases.includes(:plan, :user).find(params[:id])
-    else
-      PlanPurchase.includes(:plan, :user).find(params[:id])
-    end
+                       current_account_user.plan_purchases.includes(:plan, :user).find(params[:id])
+                     else
+                       PlanPurchase.includes(:plan, :user).find(params[:id])
+                     end
   end
 
   def require_account_purchase_access!

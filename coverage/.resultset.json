@@ -565,87 +565,19 @@
             "[:then, 49, 213, 21, 213, 25]": 0,
             "[:else, 50, 213, 28, 213, 29]": 1
           },
-          "[:if, 51, 221, 4, 221, 48]": {
-            "[:then, 52, 221, 34, 221, 39]": 4,
-            "[:else, 53, 221, 42, 221, 48]": 0
+          "[:if, 51, 221, 4, 221, 46]": {
+            "[:then, 52, 221, 34, 221, 38]": 4,
+            "[:else, 53, 221, 41, 221, 46]": 0
           },
-          "[:unless, 54, 234, 4, 234, 38]": {
-            "[:else, 55, 234, 4, 234, 38]": 1,
-            "[:then, 56, 234, 4, 234, 16]": 0
+          "[:if, 54, 229, 4, 229, 66]": {
+            "[:then, 55, 229, 32, 229, 47]": 1,
+            "[:else, 56, 229, 50, 229, 66]": 0
+          },
+          "[:unless, 57, 234, 4, 234, 38]": {
+            "[:else, 58, 234, 4, 234, 38]": 1,
+            "[:then, 59, 234, 4, 234, 16]": 0
           }
         }
-      },
-      "/home/alimon/invoice_app/app/jobs/application_job.rb": {
-        "lines": [
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/mailers/application_mailer.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/mailers/invoice_mailer.rb": {
-        "lines": [
-          1,
-          1,
-          2,
-          2,
-          null,
-          2,
-          null,
-          null,
-          2,
-          null,
-          null,
-          null,
-          null,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/models/application_record.rb": {
-        "lines": [
-          1,
-          1,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/models/company.rb": {
-        "lines": [
-          1,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/models/customer.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/models/invoice_item.rb": {
-        "lines": [
-          1,
-          1,
-          null
-        ],
-        "branches": {}
       },
       "/home/alimon/invoice_app/app/models/invoice.rb": {
         "lines": [
@@ -689,6 +621,78 @@
             "[:else, 5, 23, 6, 24, 19]": 2
           }
         }
+      },
+      "/home/alimon/invoice_app/app/models/application_record.rb": {
+        "lines": [
+          1,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/models/customer.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/jobs/application_job.rb": {
+        "lines": [
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/mailers/application_mailer.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/mailers/invoice_mailer.rb": {
+        "lines": [
+          1,
+          1,
+          2,
+          2,
+          null,
+          2,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/models/company.rb": {
+        "lines": [
+          1,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/models/invoice_item.rb": {
+        "lines": [
+          1,
+          1,
+          null
+        ],
+        "branches": {}
       },
       "/home/alimon/invoice_app/app/models/plan_purchase.rb": {
         "lines": [
@@ -1635,56 +1639,6 @@
           }
         }
       },
-      "/home/alimon/invoice_app/app/controllers/users/sessions_controller.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          4,
-          null,
-          4,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          3,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          2,
-          2,
-          null,
-          1,
-          1,
-          1,
-          null,
-          null,
-          null
-        ],
-        "branches": {
-          "[:\"&.\", 0, 6, 13, 6, 33]": {
-            "[:then, 1, 6, 13, 6, 33]": 4,
-            "[:else, 2, 6, 13, 6, 33]": 0
-          },
-          "[:unless, 3, 6, 6, 11, 9]": {
-            "[:else, 4, 6, 6, 11, 9]": 3,
-            "[:then, 5, 7, 8, 10, 57]": 1
-          },
-          "[:unless, 6, 13, 6, 18, 9]": {
-            "[:else, 7, 13, 6, 18, 9]": 2,
-            "[:then, 8, 14, 8, 17, 57]": 1
-          },
-          "[:if, 9, 21, 6, 21, 81]": {
-            "[:then, 10, 21, 6, 21, 18]": 1,
-            "[:else, 11, 21, 6, 21, 81]": 1
-          }
-        }
-      },
       "/home/alimon/invoice_app/app/controllers/admin/sessions_controller.rb": {
         "lines": [
           1,
@@ -1720,6 +1674,257 @@
           "[:if, 3, 9, 6, 16, 9]": {
             "[:then, 4, 10, 8, 12, 71]": 12,
             "[:else, 5, 14, 8, 15, 50]": 1
+          }
+        }
+      },
+      "/home/alimon/invoice_app/app/controllers/reports_controller.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          2,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          4,
+          2,
+          2,
+          2,
+          2,
+          2,
+          null,
+          2,
+          6,
+          2,
+          2,
+          2,
+          2,
+          2,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          2,
+          2,
+          null,
+          null,
+          2,
+          2,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          2,
+          2,
+          null,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null,
+          2,
+          4,
+          null,
+          null,
+          4,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          2,
+          4,
+          null,
+          null,
+          2,
+          4,
+          null,
+          null,
+          4,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          2,
+          4,
+          null,
+          null,
+          null,
+          4,
+          null,
+          null,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null,
+          null,
+          1,
+          1,
+          null,
+          1,
+          null,
+          null,
+          1,
+          2,
+          null,
+          1,
+          null,
+          null,
+          1,
+          19,
+          null,
+          null,
+          1,
+          19,
+          null,
+          null,
+          1,
+          19,
+          null,
+          null,
+          1,
+          19,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 47, 4, 47, 119]": {
+            "[:then, 1, 47, 4, 47, 91]": 1,
+            "[:else, 2, 47, 4, 47, 119]": 1
+          }
+        }
+      },
+      "/home/alimon/invoice_app/app/policies/report_policy.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/policies/application_policy.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          58,
+          58,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          2,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          2,
+          null,
+          null,
+          1,
+          0,
+          null,
+          null,
+          1,
+          null,
+          1,
+          7,
+          null,
+          null,
+          1,
+          51,
+          null,
+          null
+        ],
+        "branches": {
+          "[:\"&.\", 0, 40, 4, 40, 16]": {
+            "[:then, 1, 40, 4, 40, 16]": 7,
+            "[:else, 2, 40, 4, 40, 16]": 0
+          },
+          "[:\"&.\", 3, 44, 4, 44, 24]": {
+            "[:then, 4, 44, 4, 44, 24]": 42,
+            "[:else, 5, 44, 4, 44, 24]": 9
           }
         }
       },
@@ -1940,292 +2145,55 @@
         ],
         "branches": {}
       },
-      "/home/alimon/invoice_app/app/policies/application_policy.rb": {
+      "/home/alimon/invoice_app/app/controllers/users/sessions_controller.rb": {
         "lines": [
           1,
           1,
-          null,
           1,
-          58,
-          58,
+          4,
           null,
-          null,
+          4,
           1,
-          0,
-          null,
-          null,
           1,
-          0,
-          null,
-          null,
           1,
-          0,
-          null,
-          null,
           1,
+          null,
+          null,
+          3,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          2,
           2,
           null,
-          null,
           1,
-          0,
-          null,
-          null,
           1,
-          2,
-          null,
-          null,
-          1,
-          0,
-          null,
-          null,
           1,
           null,
-          1,
-          7,
-          null,
-          null,
-          1,
-          51,
           null,
           null
         ],
         "branches": {
-          "[:\"&.\", 0, 40, 4, 40, 16]": {
-            "[:then, 1, 40, 4, 40, 16]": 7,
-            "[:else, 2, 40, 4, 40, 16]": 0
+          "[:\"&.\", 0, 6, 13, 6, 33]": {
+            "[:then, 1, 6, 13, 6, 33]": 4,
+            "[:else, 2, 6, 13, 6, 33]": 0
           },
-          "[:\"&.\", 3, 44, 4, 44, 24]": {
-            "[:then, 4, 44, 4, 44, 24]": 42,
-            "[:else, 5, 44, 4, 44, 24]": 9
+          "[:unless, 3, 6, 6, 11, 9]": {
+            "[:else, 4, 6, 6, 11, 9]": 3,
+            "[:then, 5, 7, 8, 10, 57]": 1
+          },
+          "[:unless, 6, 13, 6, 18, 9]": {
+            "[:else, 7, 13, 6, 18, 9]": 2,
+            "[:then, 8, 14, 8, 17, 57]": 1
+          },
+          "[:if, 9, 21, 6, 21, 81]": {
+            "[:then, 10, 21, 6, 21, 18]": 1,
+            "[:else, 11, 21, 6, 21, 81]": 1
           }
         }
-      },
-      "/home/alimon/invoice_app/app/controllers/pages_controller.rb": {
-        "lines": [
-          1,
-          1,
-          null,
-          null,
-          1,
-          null,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/controllers/users/passwords_controller.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          2,
-          2,
-          null,
-          2,
-          1,
-          null,
-          null,
-          2,
-          null,
-          null,
-          null
-        ],
-        "branches": {
-          "[:if, 0, 7, 6, 9, 9]": {
-            "[:then, 1, 8, 8, 8, 45]": 1,
-            "[:else, 2, 7, 6, 9, 9]": 1
-          }
-        }
-      },
-      "/home/alimon/invoice_app/app/controllers/reports_controller.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null,
-          1,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          1,
-          1,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          1,
-          null,
-          1,
-          2,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          4,
-          2,
-          2,
-          2,
-          2,
-          2,
-          null,
-          2,
-          6,
-          2,
-          2,
-          2,
-          2,
-          2,
-          null,
-          2,
-          null,
-          null,
-          null,
-          2,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          2,
-          2,
-          null,
-          null,
-          2,
-          2,
-          null,
-          null,
-          2,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          2,
-          2,
-          null,
-          null,
-          null,
-          2,
-          null,
-          null,
-          null,
-          2,
-          4,
-          null,
-          null,
-          4,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          2,
-          4,
-          null,
-          null,
-          2,
-          4,
-          null,
-          null,
-          4,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          2,
-          4,
-          null,
-          null,
-          null,
-          4,
-          null,
-          null,
-          null,
-          null,
-          2,
-          null,
-          null,
-          null,
-          null,
-          1,
-          1,
-          null,
-          1,
-          null,
-          null,
-          1,
-          2,
-          null,
-          1,
-          null,
-          null,
-          1,
-          19,
-          null,
-          null,
-          1,
-          19,
-          null,
-          null,
-          1,
-          19,
-          null,
-          null,
-          1,
-          19,
-          null,
-          null
-        ],
-        "branches": {
-          "[:if, 0, 47, 4, 47, 119]": {
-            "[:then, 1, 47, 4, 47, 91]": 1,
-            "[:else, 2, 47, 4, 47, 119]": 1
-          }
-        }
-      },
-      "/home/alimon/invoice_app/app/policies/report_policy.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null,
-          null,
-          1,
-          1,
-          null,
-          null
-        ],
-        "branches": {}
       },
       "/home/alimon/invoice_app/app/controllers/admin/plans_controller.rb": {
         "lines": [
@@ -2360,6 +2328,144 @@
             "[:else, 20, 25, 4, 25, 41]": 4
           }
         }
+      },
+      "/home/alimon/invoice_app/app/controllers/admin/accounts_controller.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/policies/user_policy.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          3,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/controllers/account_settings_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          2,
+          2,
+          null,
+          2,
+          1,
+          null,
+          1,
+          null,
+          null,
+          null,
+          1,
+          null,
+          1,
+          2,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 13, 4, 17, 7]": {
+            "[:then, 1, 14, 6, 14, 81]": 1,
+            "[:else, 2, 16, 6, 16, 49]": 1
+          }
+        }
+      },
+      "/home/alimon/invoice_app/app/controllers/users/passwords_controller.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          2,
+          2,
+          null,
+          2,
+          1,
+          null,
+          null,
+          2,
+          null,
+          null,
+          null
+        ],
+        "branches": {
+          "[:if, 0, 7, 6, 9, 9]": {
+            "[:then, 1, 8, 8, 8, 45]": 1,
+            "[:else, 2, 7, 6, 9, 9]": 1
+          }
+        }
+      },
+      "/home/alimon/invoice_app/app/policies/invoice_policy.rb": {
+        "lines": [
+          1,
+          1,
+          1,
+          null,
+          null,
+          1,
+          2,
+          null,
+          null,
+          1,
+          5,
+          null,
+          null,
+          1,
+          3,
+          null,
+          null,
+          1,
+          1,
+          null,
+          null,
+          1,
+          2,
+          null,
+          null,
+          1,
+          2,
+          null,
+          null,
+          1,
+          null,
+          1,
+          10,
+          null,
+          null
+        ],
+        "branches": {}
+      },
+      "/home/alimon/invoice_app/app/controllers/pages_controller.rb": {
+        "lines": [
+          1,
+          1,
+          null,
+          null,
+          1,
+          null,
+          null
+        ],
+        "branches": {}
       },
       "/home/alimon/invoice_app/app/controllers/registrations_controller.rb": {
         "lines": [
@@ -2585,108 +2691,6 @@
           }
         }
       },
-      "/home/alimon/invoice_app/app/controllers/admin/accounts_controller.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          null,
-          null,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/policies/user_policy.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null,
-          null,
-          1,
-          3,
-          null,
-          null
-        ],
-        "branches": {}
-      },
-      "/home/alimon/invoice_app/app/controllers/account_settings_controller.rb": {
-        "lines": [
-          1,
-          1,
-          null,
-          1,
-          1,
-          1,
-          null,
-          null,
-          1,
-          2,
-          2,
-          null,
-          2,
-          1,
-          null,
-          1,
-          null,
-          null,
-          null,
-          1,
-          null,
-          1,
-          2,
-          null,
-          null
-        ],
-        "branches": {
-          "[:if, 0, 13, 4, 17, 7]": {
-            "[:then, 1, 14, 6, 14, 81]": 1,
-            "[:else, 2, 16, 6, 16, 49]": 1
-          }
-        }
-      },
-      "/home/alimon/invoice_app/app/policies/invoice_policy.rb": {
-        "lines": [
-          1,
-          1,
-          1,
-          null,
-          null,
-          1,
-          2,
-          null,
-          null,
-          1,
-          5,
-          null,
-          null,
-          1,
-          3,
-          null,
-          null,
-          1,
-          1,
-          null,
-          null,
-          1,
-          2,
-          null,
-          null,
-          1,
-          2,
-          null,
-          null,
-          1,
-          null,
-          1,
-          10,
-          null,
-          null
-        ],
-        "branches": {}
-      },
       "/home/alimon/invoice_app/app/controllers/customers_controller.rb": {
         "lines": [
           1,
@@ -2823,6 +2827,6 @@
         "branches": {}
       }
     },
-    "timestamp": 1774422150
+    "timestamp": 1774423017
   }
 }

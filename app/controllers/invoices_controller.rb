@@ -3,12 +3,12 @@ class InvoicesController < ApplicationController
 
   INVOICES_PER_PAGE = 10
   SORTABLE_INVOICE_COLUMNS = {
-    "invoice_number" => "invoices.invoice_number",
-    "customer_name" => "customers.name",
-    "date" => "invoices.date",
-    "total" => "invoices.total",
-    "final_total" => "invoices.final_total",
-    "created_at" => "invoices.created_at"
+    "invoice_number" => Invoice.arel_table[:invoice_number],
+    "customer_name" => Customer.arel_table[:name],
+    "date" => Invoice.arel_table[:date],
+    "total" => Invoice.arel_table[:total],
+    "final_total" => Invoice.arel_table[:final_total],
+    "created_at" => Invoice.arel_table[:created_at]
   }.freeze
 
   before_action :require_account_authentication
@@ -21,7 +21,7 @@ class InvoicesController < ApplicationController
     authorize Invoice
     invoices_scope = current_account_user.invoices.left_joins(:customer).includes(:customer)
     invoices_scope = apply_search(invoices_scope)
-    invoices_scope = invoices_scope.order(Arel.sql("#{sort_column} #{sort_direction}, invoices.created_at DESC"))
+    invoices_scope = invoices_scope.order(sort_node).order(created_at: :desc)
 
     @page = normalized_page
     @query = params[:query].to_s.strip
@@ -218,15 +218,15 @@ class InvoicesController < ApplicationController
   end
 
   def current_direction
-    params[:direction] == "asc" ? "asc" : "desc"
+    params[:direction] == "asc" ? :asc : :desc
   end
 
   def sort_column
     SORTABLE_INVOICE_COLUMNS.fetch(current_sort)
   end
 
-  def sort_direction
-    current_direction.upcase
+  def sort_node
+    current_direction == :asc ? sort_column.asc : sort_column.desc
   end
 
   def apply_search(scope)

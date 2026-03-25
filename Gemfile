@@ -56,6 +56,8 @@ group :development, :test do
 end
 
 group :development do
+  gem "bundler-audit", require: false
+
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
 
@@ -86,4 +88,3 @@ gem "rubocop-rails", "~> 2.34", groups: [:development, :test]
 gem "rubocop-performance", "~> 1.26", groups: [:development, :test]
 
 gem "brakeman", "~> 8.0", group: :development
-

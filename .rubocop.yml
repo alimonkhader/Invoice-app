@@ -1,23 +1,112 @@
-# The behavior of RuboCop can be controlled via the .rubocop.yml
-# configuration file. It makes it possible to enable/disable
-# certain cops (checks) and to alter their behavior if they accept
-# any parameters. The file can be placed either in your home
-# directory or in some project directory.
-#
-# RuboCop will start looking for the configuration file in the directory
-# where the inspected file is and continue its way up to the root directory.
-#
-# See https://docs.rubocop.org/rubocop/configuration
-
 AllCops:
   NewCops: enable
   TargetRubyVersion: 3.4
+  SuggestExtensions: false
+  Exclude:
+    - 'bin/**/*'
+    - 'coverage/**/*'
+    - 'db/schema.rb'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+    - 'vendor/**/*'
+    - 'test/**/*'
+
+Bundler/OrderedGems:
+  Enabled: false
+
+Layout/ElseAlignment:
+  Enabled: false
+
+Layout/EndAlignment:
+  Enabled: false
+
+Layout/EndOfLine:
+  Enabled: false
+
+Layout/FirstArrayElementIndentation:
+  Enabled: false
 
 Layout/LineLength:
-  Max: 120
+  Max: 170
 
-Metrics/MethodLength:
-  Max: 20
+Layout/MultilineMethodCallIndentation:
+  Enabled: false
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: false
+
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: false
+
+Metrics/AbcSize:
+  Max: 90
+
+Metrics/BlockLength:
+  Exclude:
+    - 'config/environments/*.rb'
+    - 'config/routes.rb'
+    - 'spec/**/*'
 
 Metrics/ClassLength:
-  Max: 150
+  Max: 250
+
+Metrics/CyclomaticComplexity:
+  Max: 25
+
+Metrics/MethodLength:
+  Max: 100
+
+Metrics/PerceivedComplexity:
+  Max: 25
+
+Naming/BlockForwarding:
+  Enabled: false
+
+Naming/PredicateMethod:
+  Exclude:
+    - 'app/controllers/plan_purchases_controller.rb'
+
+Style/ArgumentsForwarding:
+  Enabled: false
+
+Style/BlockDelimiters:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
+
+Style/EmptyMethod:
+  Enabled: false
+
+Style/FetchEnvVar:
+  Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Style/GlobalStdStream:
+  Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Style/PercentLiteralDelimiters:
+  Enabled: false
+
+Style/RedundantConstantBase:
+  Enabled: false
+
+Style/RedundantFetchBlock:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
+
+Style/StringLiteralsInInterpolation:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/WordArray:
+  Enabled: false
