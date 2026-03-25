@@ -6,10 +6,12 @@ class RegistrationsController < ApplicationController
   before_action :ensure_plan_available_for_current_user!, if: :account_authenticated?
 
   def new
+    authorize @plan, :register?
     @user = registration_user
   end
 
   def create
+    authorize @plan, :register?
     @user = registration_user
     @user.assign_attributes(user_params)
     @user.role = "account_admin"

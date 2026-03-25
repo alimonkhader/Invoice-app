@@ -4,10 +4,12 @@ class PlanPurchasesController < ApplicationController
   before_action :set_plan_purchase, except: :index
 
   def index
+    authorize PlanPurchase
     @plan_purchases = current_account_user.plan_purchases.recent_first
   end
 
   def show
+    authorize @plan_purchase
     respond_to do |format|
       format.html do
         @checkout_options = checkout_options if show_checkout?
@@ -21,6 +23,7 @@ class PlanPurchasesController < ApplicationController
   end
 
   def verify
+    authorize @plan_purchase
     if @plan_purchase.paid?
       redirect_to post_payment_redirect_path, notice: "Payment already verified."
       return
@@ -53,6 +56,7 @@ class PlanPurchasesController < ApplicationController
   end
 
   def download_invoice
+    authorize @plan_purchase, :download_invoice?
     return unless require_account_purchase_access!
 
     send_purchase_invoice_pdf

@@ -3,10 +3,12 @@ class AccountSettingsController < ApplicationController
 
   def show
     @user = current_account_user
+    authorize @user, :manage_settings?
   end
 
   def update
     @user = current_account_user
+    authorize @user, :manage_settings?
 
     if @user.update(account_settings_params)
       redirect_to settings_path, notice: "Account settings updated successfully."

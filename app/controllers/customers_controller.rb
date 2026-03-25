@@ -3,20 +3,25 @@ class CustomersController < ApplicationController
   before_action :set_customer, only: %i[show edit update destroy]
 
   def index
+    authorize Customer
     @customers = current_account_user.customers.order(:name)
   end
 
   def show
+    authorize @customer
   end
 
   def new
+    authorize Customer
     @customer = current_account_user.customers.new
   end
 
   def edit
+    authorize @customer
   end
 
   def create
+    authorize Customer
     @customer = current_account_user.customers.new(customer_params)
 
     return render_create_success if @customer.save
@@ -25,12 +30,14 @@ class CustomersController < ApplicationController
   end
 
   def update
+    authorize @customer
     return render_update_success if @customer.update(customer_params)
 
     render_validation_errors(:edit)
   end
 
   def destroy
+    authorize @customer
     @customer.destroy!
 
     respond_to do |format|
@@ -66,7 +73,7 @@ class CustomersController < ApplicationController
   def render_validation_errors(template)
     respond_to do |format|
       format.html { render template, status: :unprocessable_entity }
-      format.json { render json: @customer.errors, status: :unprocessable_entity }
+      format.json { render :show, status: :unprocessable_entity }
     end
   end
 end

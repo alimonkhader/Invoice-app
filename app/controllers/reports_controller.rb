@@ -3,12 +3,14 @@ class ReportsController < ApplicationController
   before_action :require_excel_reports_access, only: :monthly_purchases_xlsx
 
   def purchases
+    authorize :report, :purchases?
     @selected_date = parse_selected_date
     @selected_month = parse_selected_month
     load_purchase_report_data
   end
 
   def monthly_purchases_xlsx
+    authorize :report, :monthly_purchases_xlsx?
     @selected_month = parse_selected_month
     load_purchase_report_data
 

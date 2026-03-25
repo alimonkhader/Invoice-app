@@ -18,6 +18,7 @@ class InvoicesController < ApplicationController
   helper_method :current_sort, :current_direction
 
   def index
+    authorize Invoice
     invoices_scope = current_account_user.invoices.left_joins(:customer).includes(:customer)
     invoices_scope = apply_search(invoices_scope)
     invoices_scope = invoices_scope.order(Arel.sql("#{sort_column} #{sort_direction}, invoices.created_at DESC"))
@@ -31,6 +32,7 @@ class InvoicesController < ApplicationController
   end
 
   def show
+    authorize @invoice
     respond_to do |format|
       format.html
       format.pdf { send_invoice_pdf }
@@ -38,14 +40,17 @@ class InvoicesController < ApplicationController
   end
 
   def new
+    authorize Invoice
     @invoice = Invoice.new(default_company_attributes)
     @invoice.invoice_items.build
   end
 
   def edit
+    authorize @invoice
   end
 
   def create
+    authorize Invoice
     @invoice = Invoice.new(invoice_params)
     @invoice.user = current_account_user
     assign_customer_from_input(@invoice)
@@ -56,12 +61,13 @@ class InvoicesController < ApplicationController
         format.json { render :show, status: :created, location: @invoice }
       else
         format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @invoice.errors, status: :unprocessable_entity }
+        format.json { render :show, status: :unprocessable_entity }
       end
     end
   end
 
   def update
+    authorize @invoice
     @invoice.assign_attributes(invoice_params)
     assign_customer_from_input(@invoice)
 
@@ -71,12 +77,13 @@ class InvoicesController < ApplicationController
         format.json { render :show, status: :ok, location: @invoice }
       else
         format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @invoice.errors, status: :unprocessable_entity }
+        format.json { render :show, status: :unprocessable_entity }
       end
     end
   end
 
   def destroy
+    authorize @invoice
     @invoice.destroy!
 
     respond_to do |format|
@@ -86,16 +93,18 @@ class InvoicesController < ApplicationController
   end
 
   def send_email
+    authorize @invoice
     if @invoice.customer&.email.blank?
       redirect_to @invoice, alert: "Customer email is missing."
       return
     end
 
-    InvoiceMailer.with(invoice: @invoice).invoice_email.deliver_later
-    redirect_to @invoice, notice: "Invoice email has been queued."
+    InvoiceMailer.with(invoice: @invoice).invoice_email.deliver_now
+    redirect_to @invoice, notice: "Invoice email was sent successfully."
   end
 
   def share_whatsapp
+    authorize @invoice, :share_whatsapp?
     if @invoice.customer&.phone.blank?
       redirect_to @invoice, alert: "Customer phone is missing."
       return

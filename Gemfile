@@ -77,6 +77,8 @@ end
 
 gem "devise", "~> 5.0"
 
+gem "pundit"
+
 gem "rubocop", "~> 1.86", groups: [:development, :test]
 
 gem "rubocop-rails", "~> 2.34", groups: [:development, :test]

@@ -1,7 +1,15 @@
 class ApplicationController < ActionController::Base
+  include Pundit::Authorization
+
   helper_method :admin_authenticated?, :current_admin, :account_authenticated?, :current_account_user, :portal_authenticated?
 
+  rescue_from Pundit::NotAuthorizedError, with: :handle_not_authorized
+
   private
+
+  def pundit_user
+    current_admin || current_account_user
+  end
 
   def current_admin
     @current_admin ||= User.admins.find_by(id: session[:admin_id]) if session[:admin_id].present?
@@ -49,5 +57,9 @@ class ApplicationController < ActionController::Base
     return if current_account_user&.excel_reports_enabled?
 
     redirect_to purchase_reports_path(month: params[:month]), alert: "Your current plan does not include XLSX report export."
+  end
+
+  def handle_not_authorized
+    redirect_to(portal_authenticated? ? root_path : login_path, alert: "You are not authorized to perform that action.")
   end
 end

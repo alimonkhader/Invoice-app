@@ -1,0 +1,32 @@
+
+[1m[35m== Brakeman Report ==
+[0m
+[32mApplication Path[0m: /home/alimon/invoice_app
+[32mRails Version[0m: 8.0.4
+[32mBrakeman Version[0m: 8.0.4
+[32mScan Date[0m: 2026-03-25 12:08:54 +0530
+[32mDuration[0m: 1.853882425 seconds
+[32mChecks Run[0m: BasicAuth, BasicAuthTimingAttack, CSRFTokenForgeryCVE, ContentTag, CookieSerialization, CreateWith, CrossSiteScripting, DefaultRoutes, Deserialize, DetailedExceptions, DigestDoS, DynamicFinders, EOLRails, EOLRuby, EscapeFunction, Evaluation, Execute, FileAccess, FileDisclosure, FilterSkipping, ForgerySetting, HeaderDoS, I18nXSS, JRubyXML, JSONEncoding, JSONEntityEscape, JSONParsing, LinkTo, LinkToHref, MailTo, MassAssignment, MimeTypeDoS, ModelAttrAccessible, ModelAttributes, ModelSerialize, NestedAttributes, NestedAttributesBypass, NumberToCurrency, PageCachingCVE, Pathname, PermitAttributes, QuoteTableName, Ransack, Redirect, RegexDoS, Render, RenderDoS, RenderInline, RenderRCE, ResponseSplitting, RouteDoS, SQL, SQLCVEs, SSLVerify, SafeBufferManipulation, SanitizeConfigCve, SanitizeMethods, SelectTag, SelectVulnerability, Send, SendFile, SessionManipulation, SessionSettings, SimpleFormat, SingleQuotes, SkipBeforeFilter, SprocketsPathTraversal, StripTags, SymbolDoSCVE, TemplateInjection, TranslateBug, UnsafeReflection, UnsafeReflectionMethods, ValidationRegex, VerbConfusion, WeakRSAKey, WithoutProtection, XMLDoS, YAMLParsing
+
+[1m[35m== Overview ==
+[0m
+[32mControllers[0m: 15
+[32mModels[0m: 8
+[32mTemplates[0m: 32
+[32mErrors[0m: 0
+[32mSecurity Warnings[0m: 1
+
+[1m[35m== Warning Types ==
+[0m
+[32mSQL Injection[0m: 1
+
+[1m[35m== Warnings ==
+[0m
+[32mConfidence[0m: [33mMedium[0m
+[32mCategory[0m: SQL Injection
+[32mCheck[0m: SQL
+[32mMessage[0m: Possible SQL injection
+[32mCode[0m: Arel.sql("#{[33msort_column[0m} #{sort_direction}, invoices.created_at DESC")
+[32mFile[0m: app/controllers/invoices_controller.rb
+[32mLine[0m: 23
+
