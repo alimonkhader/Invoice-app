@@ -3,6 +3,7 @@
   <head>
     <title><%= content_for(:title) || "Nilam Invoice" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="description" content="<%= content_for?(:meta_description) ? yield(:meta_description) : 'Nilam Invoice is a green-themed billing workspace for plans, invoices, customers, GST-ready reporting, and business operations.' %>">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -16,9 +17,12 @@
 
   <body>
     <div class="page-shell">
+      <div class="page-shell__glow page-shell__glow--one" aria-hidden="true"></div>
+      <div class="page-shell__glow page-shell__glow--two" aria-hidden="true"></div>
+
       <header class="navbar navbar-expand-lg app-navbar sticky-top">
-        <div class="container py-3">
-          <div>
+        <div class="container app-navbar__inner py-3">
+          <div class="app-navbar__brand-block">
             <%= link_to root_path, class: "navbar-brand fw-bold brand brand-lockup" do %>
               <span class="brand-mark" aria-hidden="true">
                 <%= image_tag "nilam-coconut-logo.svg", alt: "", class: "brand-mark__image" %>
@@ -30,20 +34,35 @@
             <% end %>
             <p class="nav-caption mb-0">Plans, registrations, invoices, reports, and admin tools in one workspace.</p>
           </div>
-          <nav class="ms-auto d-flex gap-2 flex-wrap justify-content-end">
+          <nav class="app-nav ms-auto">
             <%= link_to "Home", root_path, class: "btn btn-outline-secondary btn-sm" %>
             <% if admin_authenticated? %>
               <%= link_to "Admin Plans", admin_plans_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Accounts", admin_accounts_path, class: "btn btn-outline-secondary btn-sm" %>
-              <span class="btn btn-outline-secondary btn-sm disabled"><%= current_admin.email %></span>
-              <%= button_to "Admin Logout", admin_session_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+              <div class="dropdown app-nav__menu">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle app-nav__menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Admin Menu
+                </button>
+                <div class="dropdown-menu dropdown-menu-end app-nav__dropdown">
+                  <div class="app-nav__dropdown-email"><%= current_admin.email %></div>
+                  <%= button_to "Admin Logout", admin_session_path, method: :delete, class: "dropdown-item app-nav__dropdown-button" %>
+                </div>
+              </div>
             <% elsif account_authenticated? %>
               <%= link_to "Invoices", invoices_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Customers", customers_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Reports", purchase_reports_path, class: "btn btn-outline-secondary btn-sm" %>
+              <%= link_to "Orders", plan_purchases_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Settings", settings_path, class: "btn btn-outline-secondary btn-sm" %>
-              <span class="btn btn-outline-secondary btn-sm disabled"><%= current_account_user.email %></span>
-              <%= button_to "Logout", logout_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+              <div class="dropdown app-nav__menu">
+                <button class="btn btn-outline-secondary btn-sm dropdown-toggle app-nav__menu-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Account Menu
+                </button>
+                <div class="dropdown-menu dropdown-menu-end app-nav__dropdown">
+                  <div class="app-nav__dropdown-email"><%= current_account_user.email %></div>
+                  <%= button_to "Logout", logout_path, method: :delete, class: "dropdown-item app-nav__dropdown-button" %>
+                </div>
+              </div>
             <% else %>
               <%= link_to "Account Login", login_path, class: "btn btn-outline-secondary btn-sm" %>
               <%= link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary btn-sm" %>
@@ -66,8 +85,15 @@
 
       <footer class="app-footer">
         <div class="container app-footer__inner">
-          <p class="mb-0">&copy; <%= Date.current.year %> Nilam Invoice. All rights reserved.</p>
-          <p class="mb-0 app-footer__note">Built with Kerala-inspired green branding.</p>
+          <div>
+            <p class="mb-1">&copy; <%= Date.current.year %> Nilam Invoice. All rights reserved.</p>
+            <p class="mb-0 app-footer__note">Green-themed workspace for plans, invoices, and reporting.</p>
+          </div>
+          <div class="app-footer__links">
+            <%= link_to "About Us", about_us_path, class: "app-footer__link" %>
+            <%= link_to "Terms & Conditions", terms_and_conditions_path, class: "app-footer__link" %>
+            <div class="app-footer__badge">Kerala-inspired product shell</div>
+          </div>
         </div>
       </footer>
     </div>

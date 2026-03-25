@@ -52,7 +52,7 @@ class User < ApplicationRecord
     self.active = true
     self.status = "active"
     self.started_on = Date.current
-    self.expires_on = plan&.duration_months.to_i.positive? ? started_on.advance(months: plan.duration_months) : nil
+    self.expires_on = next_plan_expiry_date
     save!
   end
 
@@ -107,5 +107,25 @@ class User < ApplicationRecord
   def assign_plan_dates
     self.started_on ||= Date.current
     self.expires_on ||= plan.duration_months.positive? ? started_on.advance(months: plan.duration_months) : nil
+  end
+
+  public
+
+  def next_plan_expiry_date(reference_date: Date.current)
+    duration_months = plan&.duration_months.to_i
+    return nil unless duration_months.positive?
+
+    validity_anchor = [reference_date, carried_forward_validity_date(reference_date: reference_date)].compact.max
+    validity_anchor.advance(months: duration_months)
+  end
+
+  private
+
+  def carried_forward_validity_date(reference_date: Date.current)
+    current_expiry = expires_on
+    return nil if current_expiry.blank?
+    return nil if current_expiry < reference_date
+
+    current_expiry
   end
 end

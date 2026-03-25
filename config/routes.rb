@@ -12,12 +12,15 @@ Rails.application.routes.draw do
   end
 
   root "home#index"
+  get "about-us", to: "pages#about", as: :about_us
+  get "terms-and-conditions", to: "pages#terms", as: :terms_and_conditions
 
   resource :settings, only: %i[show update], controller: :account_settings
 
-  resources :plan_purchases, only: :show do
+  resources :plan_purchases, only: %i[index show] do
     member do
       post :verify
+      get :download_invoice
     end
   end
 

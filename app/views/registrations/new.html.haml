@@ -8,7 +8,7 @@
       - if @plan.price.zero?
         %p.page-subtitle Switch your current account to this lower plan immediately.
       - else
-        %p.page-subtitle Confirm your account details and continue to Razorpay to renew or change the package.
+        %p.page-subtitle Confirm your account details and continue to Razorpay to renew this plan anytime or move to a higher plan immediately.
     - else
       %h1.page-title= "Register for #{@plan.name}"
       - if @plan.price.zero?
@@ -23,7 +23,7 @@
     %p.mb-0= @plan.price.zero? ? "No payment needed" : "Razorpay checkout will open after registration"
 
 .form-card
-  = form_with model: [@plan, @user], url: plan_registrations_path(@plan) do |f|
+  = form_with model: [@plan, @user], url: plan_registrations_path(@plan), method: :post do |f|
     - if @user.errors.any?
       .error-box
         %strong= "#{pluralize(@user.errors.count, 'error')} prevented registration:"
@@ -53,7 +53,7 @@
           = f.label :password, account_authenticated? ? "New password (optional)" : "Password"
           = f.password_field :password, class: "form-control", placeholder: account_authenticated? ? "Leave blank to keep current password" : "Create password"
 
-    - submit_label = @plan.price.zero? ? (account_authenticated? ? "Switch Plan" : "Complete Registration") : (account_authenticated? ? "Continue to Renewal Payment" : "Continue to Payment")
+    - submit_label = @plan.price.zero? ? (account_authenticated? ? "Switch Plan" : "Complete Registration") : (account_authenticated? ? "Continue to Order Payment" : "Continue to Payment")
     .actions
       = f.submit(submit_label, class: "btn btn-primary")
       = link_to "Back to plans", root_path(anchor: "plans"), class: "btn btn-outline-secondary"

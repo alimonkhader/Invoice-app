@@ -51,7 +51,7 @@ class RegistrationsController < ApplicationController
     @user.status = "active"
 
     if @user.save
-      redirect_to(account_authenticated? ? root_path(anchor: "plans") : login_path, notice: success_message_for_free_plan)
+      redirect_to(account_authenticated? ? plan_purchases_path : login_path, notice: success_message_for_free_plan)
     else
       render :new, status: :unprocessable_entity
     end
@@ -77,7 +77,7 @@ class RegistrationsController < ApplicationController
       create_plan_purchase!(@user)
     end
 
-    redirect_to plan_purchase_path(purchase), notice: "Complete the payment to renew or switch your plan."
+    redirect_to plan_purchase_path(purchase, open_checkout: 1), notice: "Continue with Razorpay to complete your payment."
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
   rescue RazorpayClient::Error => e
@@ -95,7 +95,7 @@ class RegistrationsController < ApplicationController
       create_plan_purchase!(@user)
     end
 
-    redirect_to plan_purchase_path(purchase), notice: "Registration saved. Complete the Razorpay payment to activate your account."
+    redirect_to plan_purchase_path(purchase, open_checkout: 1), notice: "Registration saved. Razorpay checkout will open for payment."
   rescue ActiveRecord::RecordInvalid
     render :new, status: :unprocessable_entity
   rescue RazorpayClient::Error => e
@@ -136,9 +136,9 @@ class RegistrationsController < ApplicationController
 
   def plan_available_for_current_user?
     return true if current_account_user.plan.blank?
-    return false unless current_plan_renewable?
+    return true if @plan.price.to_i >= current_account_user.plan.price.to_i
 
-    @plan.price <= current_account_user.plan.price
+    current_plan_renewable?
   end
 
   def current_plan_renewable?
@@ -149,7 +149,7 @@ class RegistrationsController < ApplicationController
   end
 
   def success_message_for_free_plan
-    return "Plan updated successfully." if account_authenticated?
+    return "Plan updated successfully. Your order history is available in Orders." if account_authenticated?
 
     "Registration completed for the #{@plan.name} plan. You can log in now."
   end

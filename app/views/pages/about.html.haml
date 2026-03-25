@@ -1,0 +1,65 @@
+- content_for :title, "About Us"
+- content_for :meta_description, "Nilam Invoice is a green-themed invoice software platform for GST billing, invoice management, customer records, and small business invoicing in Kerala and across India."
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow About us
+    %h1.page-title About Nilam Invoice
+    %p.page-subtitle Nilam Invoice is built to make invoice software feel simple, fast, and practical for growing businesses. We focus on GST billing, invoice management, customer records, reporting, and day-to-day billing operations for small businesses in Kerala and across India.
+    .actions.actions--compact
+      = link_to "View Plans", root_path(anchor: "plans"), class: "btn btn-primary"
+      = link_to "Contact Through Login", login_path, class: "btn btn-secondary"
+  .page-hero__panel
+    %span.hero-pill Why we exist
+    %p.mb-2 We want business owners to spend less time fighting billing tools and more time serving customers.
+    %p.mb-0 Nilam Invoice combines invoice creation, PDF sharing, WhatsApp sharing, plan onboarding, and reporting in one clean workspace.
+
+.page-section.page-section--features
+  .section-heading.section-heading--split
+    %div
+      %span.eyebrow Our mission
+      %h2.section-title Built for practical business billing
+      %p.muted.mb-0 A focused product for fast invoicing, GST-ready billing, and clear records.
+    .section-badge.section-badge--soft
+      %span.section-badge__value SEO
+      %span.section-badge__label Business terms
+  .feature-list.feature-list--enhanced
+    .meta-item.meta-item--accent
+      %span.meta-label Invoice software
+      %span.meta-value Nilam Invoice helps small businesses create invoices quickly, organize customer data, and manage repeat billing without a complicated setup.
+    .meta-item.meta-item--accent
+      %span.meta-label GST billing software
+      %span.meta-value The platform supports GST-oriented invoice workflows, monthly reporting, and a cleaner billing process for Indian businesses.
+    .meta-item.meta-item--accent
+      %span.meta-label Invoice management system
+      %span.meta-value Teams can manage plans, invoices, customers, and account access from one role-based invoice management system.
+
+.page-section.page-section--plans
+  .section-heading
+    %div
+      %span.eyebrow What we offer
+      %h2.section-title A simpler billing workflow
+      %p.muted.mb-0 The product is designed for owners, admins, and teams that need a reliable invoicing platform.
+  .feature-grid.feature-grid--spotlight
+    .card.feature-card.feature-card--spotlight
+      %span.card-kicker Fast billing
+      %h3.card-title Create and share invoices
+      %p.muted.mb-0 Generate invoices, export PDF files, and share billing details by email or WhatsApp with fewer steps.
+    .card.feature-card.feature-card--spotlight
+      %span.card-kicker Reporting
+      %h3.card-title Track purchases and totals
+      %p.muted.mb-0 Review daily and monthly purchase reports with GST visibility and optional XLSX export on supported plans.
+    .card.feature-card.feature-card--spotlight
+      %span.card-kicker Admin control
+      %h3.card-title Manage plans and accounts
+      %p.muted.mb-0 Keep registrations, plan access, and account visibility under one admin workspace.
+
+.page-section
+  .section-heading
+    %div
+      %span.eyebrow Who we serve
+      %h2.section-title Small businesses that need clarity
+      %p.muted.mb-0 Nilam Invoice is intended for businesses that want dependable invoice software without unnecessary complexity.
+  .card
+    %p.mb-3 We are especially aligned with retailers, distributors, service providers, and growing companies that need small business invoicing software, GST billing software, customer records, and invoice reporting in one application.
+    %p.mb-0 Our aim is straightforward: give businesses a calmer way to manage invoices, plans, reporting, and account operations with a clear green-themed interface.

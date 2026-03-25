@@ -1,6 +1,4 @@
 class HomeController < ApplicationController
-  RENEWAL_NOTICE_DAYS = 7
-
   def index
     @feature_groups = [
       {
@@ -13,12 +11,12 @@ class HomeController < ApplicationController
       },
       {
         title: "Plan-based onboarding",
-        description: "Offer Trial, Basic, and Premium plans with account registration and admin management."
+        description: "Offer Trial, Basic, and Premium plans with account registration, renewal, upgrade, and admin management."
       }
     ]
 
     @current_plan_user = current_account_user if account_authenticated?
-    @show_account_plan_options = account_plan_options_visible?
+    @show_account_plan_options = account_authenticated?
     @plans = visible_plans
   end
 
@@ -27,18 +25,18 @@ class HomeController < ApplicationController
   def visible_plans
     return Plan.none if admin_authenticated?
     return Plan.active_first unless account_authenticated?
-    return Plan.none unless @show_account_plan_options
     return Plan.active_first if @current_plan_user&.plan.blank?
 
-    Plan.active_first.where("price <= ?", @current_plan_user.plan.price)
+    current_price = @current_plan_user.plan.price.to_i
+    Plan.active_first.select do |plan|
+      plan.price.to_i >= current_price || current_plan_downgrade_window_open?
+    end
   end
 
-  def account_plan_options_visible?
-    return false unless account_authenticated?
-    return true if @current_plan_user&.plan.blank?
-    return true if @current_plan_user.plan.price.to_i.zero?
-    return true if @current_plan_user.expires_on.blank?
+  def current_plan_downgrade_window_open?
+    return true if @current_plan_user&.plan&.price.to_i.zero?
+    return true if @current_plan_user&.expires_on.blank?
 
-    @current_plan_user.expires_on <= (Date.current + RENEWAL_NOTICE_DAYS)
+    @current_plan_user.expires_on <= (Date.current + 7.days)
   end
 end

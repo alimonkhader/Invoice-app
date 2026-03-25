@@ -1,0 +1,76 @@
+- content_for :title, "Plan Orders"
+
+.page-hero.page-hero--tight
+  .page-hero__content
+    %span.eyebrow Orders
+    %h1.page-title Plan orders and payments
+    %p.page-subtitle Review every plan purchase, see payment status, open the order page, and download purchase invoices for paid orders.
+  .page-hero__panel
+    %span.hero-pill Account billing
+    %p.mb-1= "#{@plan_purchases.count} total order#{'s' unless @plan_purchases.count == 1}"
+    %p.mb-0 Keep your payment history, order numbers, and plan invoices in one place.
+
+- if current_account_user&.plan.present?
+  .page-section.page-section--features
+    .section-heading.section-heading--split
+      %div
+        %span.eyebrow Plan validity
+        %h2.section-title Current plan and next expiry
+        %p.muted.mb-0 Your existing plan remains active, and renewals or switches carry forward remaining validity.
+      .section-badge.section-badge--soft
+        %span.section-badge__value= current_account_user.plan.name
+        %span.section-badge__label Current plan
+    .feature-list.feature-list--enhanced
+      .meta-item.meta-item--accent
+        %span.meta-label Current expiry
+        %span.meta-value= current_account_user.expires_on ? l(current_account_user.expires_on, format: :long) : "No expiry date"
+      .meta-item.meta-item--accent
+        %span.meta-label If renewed today
+        %span.meta-value= current_account_user.next_plan_expiry_date ? l(current_account_user.next_plan_expiry_date, format: :long) : "No expiry date"
+      .meta-item.meta-item--accent
+        %span.meta-label Validity rule
+        %span.meta-value Remaining active days are added to the new plan validity during renewal or switch.
+
+.table-card
+  .table-card__header
+    %div
+      %h2.table-card__title Order history
+      %p.muted.mb-0 Recent plan purchases, renewals, and upgrades for your account.
+    = link_to "View Plans", root_path(anchor: "plans"), class: "btn btn-primary"
+
+  - if @plan_purchases.any?
+    .table-responsive
+      %table.invoice-table
+        %thead
+          %tr
+            %th Order
+            %th Plan
+            %th Status
+            %th Date
+            %th Amount
+            %th Actions
+        %tbody
+          - @plan_purchases.each do |purchase|
+            %tr
+              %td
+                %strong= purchase.display_number
+                %br
+                %span.muted= purchase.receipt
+              %td
+                %strong= purchase.plan.name
+                %br
+                %span.muted= purchase.plan.duration_label
+              %td= purchase.status.humanize
+              %td= l((purchase.paid_at || purchase.created_at).to_date, format: :long)
+              %td.table-total= number_to_currency(purchase.amount, unit: "₹", precision: 0)
+              %td
+                .actions.actions--compact
+                  = link_to "Open", plan_purchase_path(purchase), class: "btn btn-outline-secondary btn-sm"
+                  - if purchase.paid?
+                    = link_to "Invoice", download_invoice_plan_purchase_path(purchase), class: "btn btn-secondary btn-sm"
+                  - elsif purchase.can_retry_payment?
+                    = link_to "Pay", plan_purchase_path(purchase), class: "btn btn-primary btn-sm"
+  - else
+    .empty-state
+      %h3.empty-state__title No plan orders yet
+      %p.muted.mb-0 Your plan purchases, renewals, and upgrades will appear here once you create them.

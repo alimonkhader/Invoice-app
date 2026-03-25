@@ -1,63 +1,94 @@
 - content_for :title, "Invoice Plans"
 
-.page-hero
-  .page-hero__content
-    %span.eyebrow Invoice platform
-    %h1.page-title Plans, billing, and invoice operations in one place.
+- plan_count = @plans.size
+- active_plan_count = @plans.count(&:active?)
+
+.page-hero.page-hero--home
+  .page-hero__content.page-hero__content--home
+    %span.eyebrow Green billing workspace
+    %h1.page-title Run plans, customers, invoices, and reporting from one calm dashboard.
     - if account_authenticated?
-      %p.page-subtitle Manage your current package, renew close to expiry, and move only to eligible lower-priced plans.
+      %p.page-subtitle Your account is active inside the same workspace where you manage invoices, renew plans, and track reporting without jumping between tools.
     - elsif admin_authenticated?
-      %p.page-subtitle Super admins manage plans and registered accounts here. Purchase and renewal options stay hidden from the admin workspace.
+      %p.page-subtitle Use the admin workspace to control plans and registered accounts while keeping commercial purchase actions separate from operations.
     - else
-      %p.page-subtitle Launch the product from a proper home page with clear plans, product features, registration flow, and login access for both purchased accounts and admins.
+      %p.page-subtitle A greener, cleaner invoicing flow for Kerala-ready businesses with plan onboarding, PDF billing, WhatsApp sharing, and monthly reporting.
+    .hero-metrics
+      .hero-metric
+        %span.hero-metric__value= active_plan_count
+        %span.hero-metric__label Active plans
+      .hero-metric
+        %span.hero-metric__value 3
+        %span.hero-metric__label Core workflows
+      .hero-metric
+        %span.hero-metric__value 1
+        %span.hero-metric__label Shared workspace
     .actions.actions--compact
       - unless admin_authenticated?
         = link_to "View Plans", "#plans", class: "btn btn-primary"
-      - unless account_authenticated? || admin_authenticated?
-        = link_to "Account Login", login_path, class: "btn btn-outline-secondary"
+      - if account_authenticated?
+        = link_to "Open Invoices", invoices_path, class: "btn btn-secondary"
+      - elsif admin_authenticated?
+        = link_to "Manage Plans", admin_plans_path, class: "btn btn-secondary"
+      - else
+        = link_to "Account Login", login_path, class: "btn btn-secondary"
         = link_to "Admin Login", admin_login_path, class: "btn btn-outline-secondary"
-  .page-hero__panel
-    - if account_authenticated?
-      %span.hero-pill Current package
-      %p.mb-1= @current_plan_user.plan&.name || "No active plan"
-      %p.mb-1= @current_plan_user.expires_on ? "Expires on #{@current_plan_user.expires_on.strftime('%d %b %Y')}" : "No expiry date"
-      %p.mb-0= @show_account_plan_options ? "Renewal or lower-plan options are available below." : "Your current package is active, so extra plans are hidden for now."
-    - elsif admin_authenticated?
-      %span.hero-pill Admin workspace
-      %p.mb-1 Manage plans, registrations, and account visibility.
-      %p.mb-0 Pricing and purchase actions are hidden while you are logged in as super admin.
-    - else
-      %span.hero-pill Product features
-      %p.mb-0 Trial starts free, Basic unlocks monthly unlimited invoices, and Premium adds a 3-month cycle with Excel reporting.
+  .page-hero__panel.page-hero__panel--home
+    .hero-panel-card
+      %span.hero-pill Workspace snapshot
+      - if account_authenticated?
+        %h3.hero-panel-title= @current_plan_user.plan&.name || "No active plan"
+        %p.hero-panel-copy= @current_plan_user.expires_on ? "Plan access available until #{@current_plan_user.expires_on.strftime('%d %b %Y')}" : "Your account is active without a recorded expiry date."
+        %ul.hero-panel-list
+          %li Invoice creation, customer records, and reports stay in one signed-in flow.
+          %li Renew this plan anytime, upgrade to a higher plan anytime, and switch to lower plans near renewal.
+      - elsif admin_authenticated?
+        %h3.hero-panel-title Admin control
+        %p.hero-panel-copy Keep operational access separate while managing plans and account visibility from one place.
+        %ul.hero-panel-list
+          %li Plan pricing and availability are controlled centrally.
+          %li Account listings and admin tools stay grouped in the same workspace.
+      - else
+        %h3.hero-panel-title Built for daily billing
+        %p.hero-panel-copy A calmer product shell with stronger hierarchy, green accents, and clearer calls to action.
+        %ul.hero-panel-list
+          %li Registration, purchase, and invoice tasks follow one visual language.
+          %li Reporting and admin tools remain available without cluttering the main flow.
 
-.feature-grid
+.feature-grid.feature-grid--spotlight
   - @feature_groups.each do |feature|
-    .card.feature-card
+    .card.feature-card.feature-card--spotlight
       %span.card-kicker Feature
       %h3.card-title= feature[:title]
       %p.muted.mb-0= feature[:description]
 
 - unless admin_authenticated?
-  #plans.page-section
-    .section-heading
+  #plans.page-section.page-section--plans
+    .section-heading.section-heading--split
       %div
         %span.eyebrow Pricing
         - if account_authenticated?
-          %h2.section-title Renewal and plan options
+          %h2.section-title Renewal, upgrade, and plan options
           - if @show_account_plan_options
-            %p.muted.mb-0 Only renewal and lower-priced plans are shown for your logged-in account.
-          - else
-            %p.muted.mb-0 Your current plan is still active, so package choices are hidden until renewal time.
+            %p.muted.mb-0 Renew your current plan anytime, move to a higher plan anytime, and switch to lower plans near renewal.
         - else
-          %h2.section-title Choose a plan
-          %p.muted.mb-0 Start with Trial or register directly for a paid plan.
+          %h2.section-title Choose the right billing plan
+          %p.muted.mb-0 Start free or move into paid plans with invoice limits and reporting options that match your usage.
+      .section-badge
+        %span.section-badge__value= plan_count
+        %span.section-badge__label Plans visible
     - if @plans.any?
       .plan-grid
         - @plans.each do |plan|
           - cta_label = account_authenticated? ? (@current_plan_user.plan == plan ? "Renew Plan" : "Switch Plan") : "Register"
-          .card.plan-card
-            %span.card-kicker= plan.name
-            %h3.card-title
+          .card.plan-card.plan-card--enhanced
+            .plan-card__top
+              %span.card-kicker= plan.name
+              - if plan.active?
+                %span.badge-soft Available
+              - else
+                %span.badge-soft Inactive
+            %h3.card-title.plan-card__price
               - if plan.price.zero?
                 Free
               - else
@@ -65,29 +96,32 @@
             %p.plan-meta= plan.duration_label
             %p.muted= plan.description
             %ul.plan-features
-              %li= plan.unlimited_invoices? ? "Unlimited invoices" : "#{plan.invoice_limit} invoices included"
-              %li= plan.excel_reports ? "Excel report export included" : "Excel report export not included"
-              %li= plan.active? ? "Available for signup" : "Currently inactive"
+              %li= plan.unlimited_invoices? ? "Unlimited invoices included" : "#{plan.invoice_limit} invoices included"
+              %li= plan.excel_reports ? "Excel reporting included" : "Excel reporting not included"
+              %li Clean onboarding and account activation flow
             .actions.actions--compact
               = link_to cta_label, new_plan_registration_path(plan), class: "btn btn-primary"
     - elsif account_authenticated?
       .empty-state
-        %h3.empty-state__title No package action needed now
-        %p.muted.mb-0 Your account can continue on the current plan until the renewal window opens.
+        %h3.empty-state__title No visible plan changes right now
+        %p.muted.mb-0 Your current account does not have additional plan changes available at this moment.
 
-.page-section
-  .section-heading
+.page-section.page-section--features
+  .section-heading.section-heading--split
     %div
       %span.eyebrow Operations
-      %h2.section-title Product features
-      %p.muted.mb-0 Billing workflow, reporting, and admin control in one interface.
-  .feature-list
-    .meta-item
+      %h2.section-title Product features in one flow
+      %p.muted.mb-0 A cleaner workspace for billing, account operations, and reporting.
+    .section-badge.section-badge--soft
+      %span.section-badge__value Kerala
+      %span.section-badge__label Inspired theme
+  .feature-list.feature-list--enhanced
+    .meta-item.meta-item--accent
       %span.meta-label Invoice creation
       %span.meta-value Fast item entry with PDF, email, and WhatsApp sharing.
-    .meta-item
+    .meta-item.meta-item--accent
       %span.meta-label Reports
-      %span.meta-value Daily, monthly, GST split, and XLSX export for monthly purchase totals.
-    .meta-item
+      %span.meta-value Daily, monthly, GST split, and XLSX export for purchase totals.
+    .meta-item.meta-item--accent
       %span.meta-label Users and roles
-      %span.meta-value Admin users and purchased-plan account admins are stored in one role-based users table.
+      %span.meta-value Admin users and purchased-plan account admins live in one role-based users table.

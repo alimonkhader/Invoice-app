@@ -25,6 +25,22 @@ class PlanPurchase < ApplicationRecord
     amount * 100
   end
 
+  def failed?
+    status == "failed"
+  end
+
+  def display_number
+    "ORD-#{id.to_s.rjust(6, "0")}"
+  end
+
+  def invoice_filename
+    "plan_purchase_#{receipt}.pdf"
+  end
+
+  def can_retry_payment?
+    !paid? && razorpay_order_id.present?
+  end
+
   def mark_paid!(payment_id:, signature:, payload: {})
     transaction do
       update!(

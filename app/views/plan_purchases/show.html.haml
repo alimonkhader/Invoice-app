@@ -1,23 +1,31 @@
-- content_for :title, "Complete Payment"
+- content_for :title, "Plan Order"
 
 .page-hero.page-hero--tight
   .page-hero__content
-    %span.eyebrow Razorpay checkout
-    %h1.page-title Complete your #{@plan_purchase.plan.name} purchase
-    %p.page-subtitle Pay securely with Razorpay to activate the account for #{@plan_purchase.user.company_name}.
+    %span.eyebrow Plan order
+    %h1.page-title= @plan_purchase.display_number
+    %p.page-subtitle Review your plan purchase, payment status, account details, and invoice options from one order page.
+    .actions.actions--compact
+      - if account_authenticated? && @plan_purchase.user_id == current_account_user.id
+        = link_to "All Orders", plan_purchases_path, class: "btn btn-secondary"
+      = link_to "View Plans", root_path(anchor: "plans"), class: "btn btn-outline-secondary"
   .page-hero__panel
-    %span.hero-pill Payment summary
+    %span.hero-pill Order summary
+    %p.mb-1= @plan_purchase.plan.name
     %p.mb-1= number_to_currency(@plan_purchase.amount, unit: "₹", precision: 0)
-    %p.mb-1= @plan_purchase.plan.duration_label
+    %p.mb-1= @plan_purchase.status.humanize
     %p.mb-0 Receipt: #{@plan_purchase.receipt}
 
 .form-card
   .section-card
     .section-head
       %div
-        %h3.section-title Account summary
-        %p.section-copy Review the plan and open Razorpay checkout when you are ready.
+        %h3.section-title Payment and account details
+        %p.section-copy Track payment status, renewal records, and invoice access for this order.
     .feature-list
+      .meta-item
+        %span.meta-label Order number
+        %span.meta-value= @plan_purchase.display_number
       .meta-item
         %span.meta-label Company
         %span.meta-value= @plan_purchase.user.company_name
@@ -31,42 +39,88 @@
         %span.meta-label Plan
         %span.meta-value= @plan_purchase.plan.name
       .meta-item
+        %span.meta-label Duration
+        %span.meta-value= @plan_purchase.plan.duration_label
+      .meta-item
+        %span.meta-label Payment status
+        %span.meta-value= @plan_purchase.status.humanize
+      .meta-item
         %span.meta-label Amount
         %span.meta-value= number_to_currency(@plan_purchase.amount, unit: "₹", precision: 0)
       .meta-item
-        %span.meta-label Status
-        %span.meta-value= @plan_purchase.status.humanize
+        %span.meta-label Ordered on
+        %span.meta-value= l(@plan_purchase.created_at.to_date, format: :long)
+      .meta-item
+        %span.meta-label Paid on
+        %span.meta-value= @plan_purchase.paid_at ? l(@plan_purchase.paid_at.to_date, format: :long) : "Not paid yet"
+      .meta-item
+        %span.meta-label Expire date after payment
+        - projected_expiry = @plan_purchase.user.next_plan_expiry_date
+        %span.meta-value= projected_expiry ? l(projected_expiry, format: :long) : "No expiry date"
+      .meta-item
+        %span.meta-label Razorpay payment
+        %span.meta-value= @plan_purchase.razorpay_payment_id.presence || "Pending"
+      .meta-item
+        %span.meta-label Failure reason
+        %span.meta-value= @plan_purchase.failure_reason.presence || "None"
 
     .actions
-      %button#razorpay-pay-button.btn.btn-primary{ type: "button" } Pay with Razorpay
-      = link_to "Back to home", root_path, class: "btn btn-outline-secondary"
+      - if @plan_purchase.paid? && account_authenticated? && @plan_purchase.user_id == current_account_user.id
+        = link_to "Download Invoice", download_invoice_plan_purchase_path(@plan_purchase), class: "btn btn-primary"
+      - elsif @plan_purchase.can_retry_payment? && @checkout_options.present?
+        %button#razorpay-pay-button.btn.btn-primary{ type: "button" } Pay with Razorpay
+      - if account_authenticated? && @plan_purchase.user_id == current_account_user.id
+        = link_to "Back to Orders", plan_purchases_path, class: "btn btn-secondary"
+      - else
+        = link_to "Back to Home", root_path, class: "btn btn-outline-secondary"
 
-= form_with url: verify_plan_purchase_path(@plan_purchase), method: :post, id: "razorpay-verification-form", local: true do |f|
-  = hidden_field_tag :razorpay_payment_id
-  = hidden_field_tag :razorpay_order_id
-  = hidden_field_tag :razorpay_signature
+- if @plan_purchase.failed?
+  .error-box
+    %strong Payment failed.
+    %div= @plan_purchase.failure_reason.presence || "The payment did not complete. You can retry from this page."
 
-%script{ src: "https://checkout.razorpay.com/v1/checkout.js" }
-:javascript
-  document.addEventListener("turbo:load", function () {
-    var payButton = document.getElementById("razorpay-pay-button");
-    if (!payButton) return;
+- elsif @plan_purchase.can_retry_payment? && @checkout_options.blank?
+  .error-box
+    %strong Razorpay checkout is unavailable.
+    %div Please configure valid Razorpay keys and reload this page to continue the payment.
 
-    payButton.addEventListener("click", function () {
+- if @checkout_options.present?
+  = form_with url: verify_plan_purchase_path(@plan_purchase), method: :post, id: "razorpay-verification-form", local: true do |f|
+    = hidden_field_tag :razorpay_payment_id
+    = hidden_field_tag :razorpay_order_id
+    = hidden_field_tag :razorpay_signature
+
+  %script{ src: "https://checkout.razorpay.com/v1/checkout.js" }
+  :javascript
+    document.addEventListener("turbo:load", function () {
+      var payButton = document.getElementById("razorpay-pay-button");
+      if (!payButton) return;
+
       var options = #{raw(json_escape(@checkout_options.to_json))};
-      options.handler = function (response) {
-        document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
-        document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
-        document.getElementById("razorpay_signature").value = response.razorpay_signature;
-        document.getElementById("razorpay-verification-form").submit();
-      };
-      options.modal = {
-        ondismiss: function () {
-          window.alert("Payment was not completed. You can retry from this page.");
-        }
-      };
+      var autoOpen = #{params[:open_checkout].to_s == "1" ? "true" : "false"};
+      var storageKey = "plan-purchase-checkout-opened-#{@plan_purchase.id}";
 
-      var razorpay = new Razorpay(options);
-      razorpay.open();
+      function openCheckout() {
+        options.handler = function (response) {
+          document.getElementById("razorpay_payment_id").value = response.razorpay_payment_id;
+          document.getElementById("razorpay_order_id").value = response.razorpay_order_id;
+          document.getElementById("razorpay_signature").value = response.razorpay_signature;
+          document.getElementById("razorpay-verification-form").submit();
+        };
+        options.modal = {
+          ondismiss: function () {
+            window.alert("Payment was not completed. You can retry from this page.");
+          }
+        };
+
+        var razorpay = new Razorpay(options);
+        razorpay.open();
+      }
+
+      payButton.addEventListener("click", openCheckout);
+
+      if (autoOpen && window.sessionStorage.getItem(storageKey) !== "1") {
+        window.sessionStorage.setItem(storageKey, "1");
+        openCheckout();
+      }
     });
-  });

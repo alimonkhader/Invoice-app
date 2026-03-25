@@ -6,7 +6,7 @@ module Admin
     def create
       admin = User.admins.find_by(email: params[:email].to_s.strip.downcase)
 
-      if admin&.authenticate(params[:password].to_s)
+      if admin&.valid_password?(params[:password].to_s)
         reset_session
         session[:admin_id] = admin.id
         redirect_to admin_plans_path, notice: "Admin login successful."
