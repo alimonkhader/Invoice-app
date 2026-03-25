@@ -105,6 +105,8 @@ class User < ApplicationRecord
   end
 
   def assign_plan_dates
+    return unless plan
+
     self.started_on ||= Date.current
     self.expires_on ||= plan.duration_months.positive? ? started_on.advance(months: plan.duration_months) : nil
   end
